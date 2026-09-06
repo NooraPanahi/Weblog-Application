@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/labstack/echo/v4"
-
 	"github.com/gorilla/sessions"
 )
 
@@ -31,8 +29,8 @@ func NewManager(secret string) *Manager {
 	return &Manager{store: store}
 }
 
-func (m *Manager) SetUserID(c echo.Context, userid int64) error {
-	se, err := m.store.Get(c.Request(), sessionName)
+func (m *Manager) SetUserID(w http.ResponseWriter, r *http.Request, userid int64) error {
+	se, err := m.store.Get(r, sessionName)
 
 	if err != nil {
 		return err
@@ -40,11 +38,11 @@ func (m *Manager) SetUserID(c echo.Context, userid int64) error {
 
 	se.Values[userIDKey] = strconv.FormatInt(userid, 10)
 
-	return se.Save(c.Request(), c.Response().Writer)
+	return se.Save(r,w)
 }
 
-func (m *Manager) GetUserID(c echo.Context) (int64, bool, error) {
-	see, err := m.store.Get(c.Request(), sessionName)
+func (m *Manager) GetUserID(r *http.Request) (int64, bool, error) {
+	see, err := m.store.Get(r, sessionName)
 
 	if err != nil {
 		return 0, false, err
@@ -68,8 +66,8 @@ func (m *Manager) GetUserID(c echo.Context) (int64, bool, error) {
 	return userID, true, nil
 }
 
-func (m *Manager) Clear(c echo.Context) error {
-	see, err := m.store.Get(c.Request(), sessionName)
+func (m *Manager) Clear(w http.ResponseWriter, r* http.Request) error {
+	see, err := m.store.Get(r, sessionName)
 
 	if err != nil {
 		return err
@@ -77,5 +75,5 @@ func (m *Manager) Clear(c echo.Context) error {
 
 	see.Options.MaxAge = -1
 
-	return see.Save(c.Request(), c.Response().Writer)
+	return see.Save(r,w)
 }
