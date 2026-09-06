@@ -20,10 +20,10 @@ func NewManager(secret string) *Manager {
 	store := sessions.NewCookieStore([]byte(secret))
 
 	store.Options = &sessions.Options{
-		Path: "/",
-		MaxAge: 86400*7,
+		Path:     "/",
+		MaxAge:   86400 * 7,
 		HttpOnly: true,
-		Secure: false,
+		Secure:   false,
 		SameSite: http.SameSiteLaxMode,
 	}
 	return &Manager{store: store}
@@ -38,7 +38,7 @@ func (m *Manager) SetUserID(w http.ResponseWriter, r *http.Request, userid int64
 
 	se.Values[userIDKey] = strconv.FormatInt(userid, 10)
 
-	return se.Save(r,w)
+	return se.Save(r, w)
 }
 
 func (m *Manager) GetUserID(r *http.Request) (int64, bool, error) {
@@ -66,7 +66,7 @@ func (m *Manager) GetUserID(r *http.Request) (int64, bool, error) {
 	return userID, true, nil
 }
 
-func (m *Manager) Clear(w http.ResponseWriter, r* http.Request) error {
+func (m *Manager) Clear(w http.ResponseWriter, r *http.Request) error {
 	see, err := m.store.Get(r, sessionName)
 
 	if err != nil {
@@ -75,5 +75,5 @@ func (m *Manager) Clear(w http.ResponseWriter, r* http.Request) error {
 
 	see.Options.MaxAge = -1
 
-	return see.Save(r,w)
+	return see.Save(r, w)
 }
