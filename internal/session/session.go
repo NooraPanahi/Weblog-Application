@@ -1,6 +1,7 @@
 package session
 
 import (
+	"net/http"
 	"strconv"
 
 	"github.com/labstack/echo/v4"
@@ -18,7 +19,16 @@ type Manager struct {
 }
 
 func NewManager(secret string) *Manager {
-	return &Manager{store: sessions.NewCookieStore([]byte(secret))}
+	store := sessions.NewCookieStore([]byte(secret))
+
+	store.Options = &sessions.Options{
+		Path: "/",
+		MaxAge: 86400*7,
+		HttpOnly: true,
+		Secure: false,
+		SameSite: http.SameSiteLaxMode,
+	}
+	return &Manager{store: store}
 }
 
 func (m *Manager) SetUserID(c echo.Context, userid int64) error {
