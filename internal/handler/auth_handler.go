@@ -84,3 +84,12 @@ func (h *AuthHandler) Login (c echo.Context) error {
 
 	return c.Redirect(http.StatusSeeOther, "/")	
 }
+
+func (h *AuthHandler) Logout (c echo.Context) error {
+	err := h.sessionManager.Clear(c.Response().Writer, c.Request())
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to clear session")
+	}
+	return c.Redirect(http.StatusSeeOther, "/login")
+}
