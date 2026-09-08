@@ -10,7 +10,7 @@ import (
 )
 
 type WeblogHandler struct {
-	weblogService *service.WeblogService
+	weblogService  *service.WeblogService
 	commentService *service.CommentService
 }
 
@@ -50,14 +50,15 @@ func (h *WeblogHandler) Create(c echo.Context) error {
 		case errors.Is(err, service.ErrInvalidPrivacy):
 			return c.Render(http.StatusBadRequest, "create.html", map[string]string{"Error": "Invalid privacy"})
 
-		default: return echo.NewHTTPError(http.StatusInternalServerError, "failed to create weblog")
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError, "failed to create weblog")
 		}
 	}
 
 	return c.Redirect(http.StatusSeeOther, "/")
 }
 
-func (h *WeblogHandler) Detail (c echo.Context) error {
+func (h *WeblogHandler) Detail(c echo.Context) error {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 
 	if err != nil || id <= 0 {
@@ -84,10 +85,42 @@ func (h *WeblogHandler) Detail (c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to  load comments")
 	}
 	data := map[string]interface{}{
-		"Weblog":weblog, 
+		"Weblog":   weblog,
 		"Comments": comments,
-		"UserID": userID,
+		"UserID":   userID,
 	}
 
 	return c.Render(http.StatusOK, "detail.html", data)
+}
+
+func (h *WeblogHandler) Delete(c echo.Context) error {
+	weblogID, err := strconv.ParseInt(c.Param("id"), 10, 64)
+
+	if err != nil || weblogID <= 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid weblog id")
+	}
+
+	userID, ok := c.Get("userID").(int64)
+	if !ok || userID <= 0 {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
+	}
+
+	err = h.weblogService.Delete(weblogID, userID)
+	if err != nil {
+		switch {
+		case errors.Is(err, service.ErrInvalidWeblogInput):
+			return echo.NewHTTPError(http.StatusBadRequest, "invalid weblog")
+
+		case errors.Is(err, service.ErrWeblogNotFound):
+			return echo.NewHTTPError(http.StatusNotFound, "weblog not found")
+
+		case errors.Is(err, service.ErrNotWeblogOwner):
+			return echo.NewHTTPError(http.StatusForbidden,"only the weblog owner can delete it")
+
+		default:
+			return echo.NewHTTPError(http.StatusInternalServerError,"failed to delete weblog")
+		}
+	}
+
+	return c.Redirect(http.StatusSeeOther, "/")
 }

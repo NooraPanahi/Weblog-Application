@@ -95,3 +95,23 @@ func (r *WeblogRepo) FindVisibleByID (id, userID int64) (*model.Weblog, error) {
 	}
 	return weblog, nil
 }
+
+func (r *WeblogRepo) Delete (id int64) error {
+	query := `DELETE FROM weblogs WHERE id = $1`
+
+	res, err := r.db.Exec(query, id)
+
+	if err != nil {
+		return fmt.Errorf("delete weblog: %w", err)
+	}
+
+	rowsAffected, err := res.RowsAffected()
+
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
+}

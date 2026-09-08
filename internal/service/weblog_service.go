@@ -3,6 +3,7 @@ package service
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/NooraPanahi/Weblog-Application.git/internal/model"
@@ -80,4 +81,33 @@ func (s *WeblogService) GetVisibleWeblogByID(weblogID, userID int64) (*model.Web
 		return nil, err
 	}
 	return weblog, nil
+}
+
+func (s *WeblogService) Delete(weblogID, userID int64) error {
+	if weblogID <= 0 || userID <= 0 {
+		return ErrInvalidWeblogInput
+	}
+
+	weblog, err := s.weblogRepo.FindWeblogByID(weblogID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrWeblogNotFound
+		}
+
+		return fmt.Errorf("find weblog for delete: %w", err)
+	}
+
+	if weblog.AuthorID != userID {
+		return ErrNotWeblogOwner
+	}
+
+	if err := s.weblogRepo.Delete(weblogID); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrWeblogNotFound
+		}
+
+		return fmt.Errorf("delete weblog: %w", err)
+	}
+
+	return nil
 }
