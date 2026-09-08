@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .Weblog.Title }}</title>
+</head>
+<body>
+
+<a href="/">Back to Home</a>
+
+<h1>{{ .Weblog.Title }}</h1>
+
+<p>
+    Privacy: {{ .Weblog.Privacy }}
+</p>
+
+{{ if .Weblog.Image }}
+    <img
+        src="{{ .Weblog.Image }}"
+        alt="{{ .Weblog.Title }}"
+        style="max-width: 600px;"
+    >
+{{ end }}
+
+<div>
+    <p>{{ .Weblog.Content }}</p>
+</div>
+
+</body>
+</html>

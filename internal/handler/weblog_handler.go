@@ -3,6 +3,7 @@ package handler
 import (
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/NooraPanahi/Weblog-Application.git/internal/service"
 	"github.com/labstack/echo/v4"
@@ -53,4 +54,31 @@ func (h *WeblogHandler) Create(c echo.Context) error {
 	}
 
 	return c.Redirect(http.StatusSeeOther, "/")
+}
+
+func (h *WeblogHandler) Detail (c echo.Context) error {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+
+	if err != nil || id <= 0 {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid weblog id")
+	}
+
+	userID, ok := c.Get("userID").(int64)
+
+	if !ok || userID <= 0 {
+		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
+	}
+
+	weblog, err := h.weblogService.GetVisibleWeblogByID(id, userID)
+
+	if err != nil {
+		if errors.Is(err, service.ErrWeblogNotFound) {
+			return echo.NewHTTPError(http.StatusNotFound, "Weblog not found")
+		}
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to load weblog")
+	}
+
+	return c.Render(http.StatusOK, "detail.html", map[string]interface{} {
+		"Weblog":weblog,
+	})
 }
