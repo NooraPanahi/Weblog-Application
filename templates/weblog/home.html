@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weblog</title>
+</head>
+<body>
+
+<h1>Weblog</h1>
+
+{{ if .Username }}
+<p>Welcome, {{ .Username }}</p>
+{{ end }}
+
+<form method="POST" action="/logout">
+    <button type="submit">Logout</button>
+</form>
+
+<hr>
+
+{{ if .Weblogs }}
+
+    {{ range .Weblogs }}
+        <article>
+            <h2>{{ .Title }}</h2>
+
+            {{ if .Image }}
+                <img
+                    src="{{ .Image }}"
+                    alt="{{ .Title }}"
+                    style="max-width: 400px;"
+                >
+            {{ end }}
+
+            <p>{{ .Content }}</p>
+
+            <small>
+                Privacy: {{ .Privacy }}
+            </small>
+        </article>
+
+        <hr>
+    {{ end }}
+
+{{ else }}
+
+    <p>No weblogs available.</p>
+
+{{ end }}
+
+</body>
+</html>
