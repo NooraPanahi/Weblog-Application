@@ -51,3 +51,15 @@ func (s *WeblogService) Create(title, content string, image *string, authorID in
 	return weblog, nil
 }
 
+func (s *WeblogService) ListVisible(userID int64) ([]*model.Weblog, error) {
+	if userID <= 0 {
+		return nil, ErrInvalidWeblogInput
+	}
+
+	weblogs, err := s.weblogRepo.ListVisible(userID)
+
+	if err != nil {
+		return nil, err
+	}
+	return weblogs, nil
+}
