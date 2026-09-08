@@ -30,7 +30,7 @@ func (re *CommentRepo) Create(comment *model.Comment) error {
 }
 
 func (co *CommentRepo) ListByWeblogID (weblogID int64) ([]*model.CommentView, error) {
-	query:= `SELECT c.id, c.weblog_id, c.user_id, c.username ,  c.content, c.created_at FROM comments c
+	query:= `SELECT c.id, c.weblog_id, c.user_id, u.username ,  c.content, c.created_at FROM comments c
 			 JOIN users u
 			 	ON u.id = c.user_id
 			 WHERE c.weblog_id = $1
@@ -47,7 +47,7 @@ func (co *CommentRepo) ListByWeblogID (weblogID int64) ([]*model.CommentView, er
 
 	for rows.Next() {
 		comment := &model.CommentView{}
-		err := rows.Scan(&comment.ID, &comment.WeblogID, &comment.UserID, &comment.Content, &comment.CreatedAt)
+		err := rows.Scan(&comment.ID, &comment.WeblogID, &comment.UserID,&comment.Username, &comment.Content, &comment.CreatedAt)
 
 		if err != nil {
 			return nil, err

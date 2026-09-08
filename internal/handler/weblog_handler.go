@@ -83,9 +83,11 @@ func (h *WeblogHandler) Detail (c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to  load comments")
 	}
-	data := map[string]interface{}{"Weblog":weblog, "Comments": comments}
-
-
+	data := map[string]interface{}{
+		"Weblog":weblog, 
+		"Comments": comments,
+		"UserID": userID,
+	}
 
 	return c.Render(http.StatusOK, "detail.html", data)
 }
