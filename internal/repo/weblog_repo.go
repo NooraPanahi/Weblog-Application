@@ -88,7 +88,7 @@ func (r *WeblogRepo) FindVisibleByID (id, userID int64) (*model.Weblog, error) {
 
 	weblog := &model.Weblog{}
 
-	err := r.db.QueryRow(query, id,userID).Scan(&weblog.ID, &weblog.Title, &weblog.Image, &weblog.AuthorID, &weblog.Privacy, &weblog.CreatedAt)
+	err := r.db.QueryRow(query, id,userID).Scan(&weblog.ID, &weblog.Title, &weblog.Content, &weblog.Image, &weblog.AuthorID, &weblog.Privacy, &weblog.CreatedAt)
 
 	if err != nil {
 		return nil, err

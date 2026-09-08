@@ -30,7 +30,7 @@ func (re *CommentRepo) Create(comment *model.Comment) error {
 }
 
 func (co *CommentRepo) ListByWeblogID (weblogID int64) ([]*model.Comment, error) {
-	query:= `SELECT id, weblog_id, user_id, content. created_at FROM comments
+	query:= `SELECT id, weblog_id, user_id, content, created_at FROM comments
 			 WHERE weblog_id = $1 
 			 ORDER BY created_at ASC`
 
