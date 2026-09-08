@@ -29,10 +29,12 @@ func (re *CommentRepo) Create(comment *model.Comment) error {
 
 }
 
-func (co *CommentRepo) ListByWeblogID (weblogID int64) ([]*model.Comment, error) {
-	query:= `SELECT id, weblog_id, user_id, content, created_at FROM comments
-			 WHERE weblog_id = $1 
-			 ORDER BY created_at ASC`
+func (co *CommentRepo) ListByWeblogID (weblogID int64) ([]*model.CommentView, error) {
+	query:= `SELECT c.id, c.weblog_id, c.user_id, c.username ,  c.content, c.created_at FROM comments c
+			 JOIN users u
+			 	ON u.id = c.user_id
+			 WHERE c.weblog_id = $1
+			 ORDER BY c.created_at ASC`
 
 	rows, err := co.db.Query(query, weblogID)
 	if err != nil {
@@ -41,10 +43,10 @@ func (co *CommentRepo) ListByWeblogID (weblogID int64) ([]*model.Comment, error)
 
 	defer rows.Close()
 
-	var comments []*model.Comment
+	var comments []*model.CommentView
 
 	for rows.Next() {
-		comment := &model.Comment{}
+		comment := &model.CommentView{}
 		err := rows.Scan(&comment.ID, &comment.WeblogID, &comment.UserID, &comment.Content, &comment.CreatedAt)
 
 		if err != nil {

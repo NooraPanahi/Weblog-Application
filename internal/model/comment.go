@@ -9,3 +9,12 @@ type Comment struct {
 	Content   string
 	CreatedAt time.Time
 }
+
+type CommentView struct {
+	ID        int64
+	WeblogID  int64
+	UserID    int64
+	Username  string
+	Content   string
+	CreatedAt time.Time
+}

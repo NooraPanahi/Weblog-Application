@@ -42,7 +42,7 @@ func (s *CommentService) Create(weblogID, userID int64, content string) (*model.
 	return comment, nil
 }
 
-func (s *CommentService) ListByWeblogID (weblogID, userID int64) ([]*model.Comment, error){
+func (s *CommentService) ListByWeblogID (weblogID, userID int64) ([]*model.CommentView, error){
 	if weblogID <= 0 || userID <= 0 {
 		return nil, ErrInvalidCommentInput
 	}
