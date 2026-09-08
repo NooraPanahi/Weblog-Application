@@ -1,6 +1,7 @@
 package service
 
 import (
+	"database/sql"
 	"errors"
 	"strings"
 
@@ -11,6 +12,7 @@ import (
 var (
 	ErrInvalidWeblogInput = errors.New("invalid weblog input")
 	ErrInvalidPrivacy     = errors.New("invalid privacy")
+	ErrWeblogNotFound     = errors.New("weblog not found")
 )
 
 type WeblogService struct {
@@ -62,4 +64,20 @@ func (s *WeblogService) ListVisible(userID int64) ([]*model.Weblog, error) {
 		return nil, err
 	}
 	return weblogs, nil
+}
+
+func (s *WeblogService) GetVisibleWeblogByID(weblogID, userID int64) (*model.Weblog, error) {
+	if weblogID <= 0 || userID <= 0 {
+		return nil, ErrInvalidWeblogInput
+	}
+
+	weblog, err := s.weblogRepo.FindVisibleByID(weblogID, userID)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrWeblogNotFound
+		}
+		return nil, err
+	}
+	return weblog, nil
 }

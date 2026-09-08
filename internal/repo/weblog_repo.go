@@ -77,3 +77,21 @@ func (r *WeblogRepo) ListVisible(userID int64) ([]*model.Weblog, error) {
 	}
 	return weblogs, nil
 }
+
+func (r *WeblogRepo) FindVisibleByID (id, userID int64) (*model.Weblog, error) {
+	query := `SELECT w.id, w.title, w.content, w.image, w.author_id, w.privacy, w.created_at FROM weblogs w
+			  LEFT JOIN weblog_shares ws 
+			  ON ws.weblog_id = w.id 
+			  AND ws.user_id = $2
+			  WHERE w.id = $1
+			  AND (w.privacy = 'public' OR w.author_id = $2 OR ws.user_id IS NOT NULL)`
+
+	weblog := &model.Weblog{}
+
+	err := r.db.QueryRow(query, id,userID).Scan(&weblog.ID, &weblog.Title, &weblog.Image, &weblog.AuthorID, &weblog.Privacy, &weblog.CreatedAt)
+
+	if err != nil {
+		return nil, err
+	}
+	return weblog, nil
+}
