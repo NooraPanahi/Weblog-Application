@@ -11,10 +11,11 @@ import (
 
 type WeblogHandler struct {
 	weblogService *service.WeblogService
+	commentService *service.CommentService
 }
 
-func NewWeblogHandler(weblogservice *service.WeblogService) *WeblogHandler {
-	return &WeblogHandler{weblogService: weblogservice}
+func NewWeblogHandler(weblogservice *service.WeblogService, commentservice *service.CommentService) *WeblogHandler {
+	return &WeblogHandler{weblogService: weblogservice, commentService: commentservice}
 }
 
 func (h *WeblogHandler) ShowCreate(c echo.Context) error {
@@ -78,7 +79,13 @@ func (h *WeblogHandler) Detail (c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "failed to load weblog")
 	}
 
-	return c.Render(http.StatusOK, "detail.html", map[string]interface{} {
-		"Weblog":weblog,
-	})
+	comments, err := h.commentService.ListByWeblogID(id, userID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to  load comments")
+	}
+	data := map[string]interface{}{"Weblog":weblog, "Comments": comments}
+
+
+
+	return c.Render(http.StatusOK, "detail.html", data)
 }
