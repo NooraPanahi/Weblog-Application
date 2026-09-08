@@ -26,5 +26,71 @@
     <p>{{ .Weblog.Content }}</p>
 </div>
 
+<hr>
+{{ if eq .UserID .Weblog.AuthorID }}
+    <hr>
+
+    <h2>Share this Weblog</h2>
+
+    <form method="POST" action="/weblog/{{ .Weblog.ID }}/share">
+        <label for="username">Username</label>
+        <br>
+        <input
+            type="text"
+            id="username"
+            name="username"
+            required
+        >
+
+        <br><br>
+
+        <button type="submit">Share</button>
+    </form>
+
+    <br>
+
+    <form
+        method="POST"
+        action="/weblog/{{ .Weblog.ID }}/delete"
+    >
+        <button type="submit">Delete Weblog</button>
+    </form>
+{{ end }}
+
+<h2>Comments</h2>
+
+{{ if .Comments }}
+    {{ range .Comments }}
+        <div>
+            <p>{{ .Content }}</p>
+        </div>
+        <hr>
+    {{ end }}
+{{ else }}
+    <p>No comments yet.</p>
+{{ end }}
+
+<hr>
+
+<h2>Add a Comment</h2>
+
+<form method="POST" action="/weblog/{{ .Weblog.ID }}/comments">
+    <div>
+        <label for="content">Comment</label>
+        <br>
+        <textarea
+            id="content"
+            name="content"
+            rows="5"
+            cols="50"
+            required
+        ></textarea>
+    </div>
+
+    <br>
+
+    <button type="submit">Add Comment</button>
+</form>
+
 </body>
 </html>

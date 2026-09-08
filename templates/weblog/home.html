@@ -26,9 +26,7 @@
 {{ if .Weblogs }}
 
     {{ range .Weblogs }}
-        <article>
-            <h2>{{ .Title }}</h2>
-
+        <article> <a href="/weblog/{{ .ID }}">{{ .Title }}</a>
             {{ if .Image }}
                 <img
                     src="{{ .Image }}"
