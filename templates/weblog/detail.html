@@ -2,95 +2,222 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ .Weblog.Title }}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
 
-<a href="/">Back to Home</a>
+<body class="min-h-screen bg-slate-950 text-slate-100">
 
-<h1>{{ .Weblog.Title }}</h1>
-
-<p>
-    Privacy: {{ .Weblog.Privacy }}
-</p>
-
-{{ if .Weblog.Image }}
-    <img
-        src="{{ .Weblog.Image }}"
-        alt="{{ .Weblog.Title }}"
-        style="max-width: 600px;"
-    >
-{{ end }}
-
-<div>
-    <p>{{ .Weblog.Content }}</p>
+<div class="absolute inset-0 -z-10 overflow-hidden">
+    <div class="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-violet-600/10 blur-3xl"></div>
 </div>
 
-<hr>
-{{ if eq .UserID .Weblog.AuthorID }}
-    <hr>
+<nav class="border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
+        <a href="/" class="text-xl font-bold tracking-tight">
+            Web<span class="text-violet-400">log</span>
+        </a>
 
-    <h2>Share this Weblog</h2>
-
-    <form method="POST" action="/weblog/{{ .Weblog.ID }}/share">
-        <label for="username">Username</label>
-        <br>
-        <input
-            type="text"
-            id="username"
-            name="username"
-            required
-        >
-
-        <br><br>
-
-        <button type="submit">Share</button>
-    </form>
-
-    <br>
-
-    <form
-        method="POST"
-        action="/weblog/{{ .Weblog.ID }}/delete"
-    >
-        <button type="submit">Delete Weblog</button>
-    </form>
-{{ end }}
-
-<h2>Comments</h2>
-
-{{ if .Comments }}
-    {{ range .Comments }}
-        <div>
-            <p>{{ .Content }}</p>
-        </div>
-        <hr>
-    {{ end }}
-{{ else }}
-    <p>No comments yet.</p>
-{{ end }}
-
-<hr>
-
-<h2>Add a Comment</h2>
-
-<form method="POST" action="/weblog/{{ .Weblog.ID }}/comments">
-    <div>
-        <label for="content">Comment</label>
-        <br>
-        <textarea
-            id="content"
-            name="content"
-            rows="5"
-            cols="50"
-            required
-        ></textarea>
+        <a href="/"
+           class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white">
+            ← Home
+        </a>
     </div>
+</nav>
 
-    <br>
+<main class="mx-auto max-w-5xl px-6 py-10">
 
-    <button type="submit">Add Comment</button>
-</form>
+    <!-- Weblog -->
+    <article class="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/20 backdrop-blur-xl">
+
+        {{ if .Weblog.Image }}
+        <div class="relative">
+            <img
+                src="{{ .Weblog.Image }}"
+                alt="{{ .Weblog.Title }}"
+                class="max-h-[520px] w-full object-cover"
+            >
+
+            <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
+        </div>
+        {{ end }}
+
+        <div class="p-7 md:p-10">
+
+            <div class="mb-5 flex flex-wrap items-center gap-3">
+                <span class="rounded-full bg-violet-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-violet-400">
+                    {{ .Weblog.Privacy }}
+                </span>
+            </div>
+
+            <h1 class="text-4xl font-bold tracking-tight text-white md:text-5xl">
+                {{ .Weblog.Title }}
+            </h1>
+
+            <div class="mt-8 whitespace-pre-line text-lg leading-8 text-slate-300">
+                {{ .Weblog.Content }}
+            </div>
+
+        </div>
+    </article>
+
+    <!-- Owner Actions -->
+    {{ if eq .UserID .Weblog.AuthorID }}
+
+    <section class="mt-8 rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
+
+        <div class="mb-5">
+            <h2 class="text-xl font-bold text-white">
+                Manage Weblog
+            </h2>
+
+            <p class="mt-1 text-sm text-slate-500">
+                Share your weblog with another user or delete it.
+            </p>
+        </div>
+
+        <form method="POST"
+              action="/weblog/{{ .Weblog.ID }}/share"
+              class="flex flex-col gap-3 sm:flex-row">
+
+            <input
+                type="text"
+                id="username"
+                name="username"
+                required
+                placeholder="Username to share with..."
+                class="flex-1 rounded-2xl border border-white/10 bg-slate-900/70 px-5 py-3.5 text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10"
+            >
+
+            <button
+                type="submit"
+                class="rounded-2xl bg-violet-600 px-6 py-3.5 font-semibold text-white transition hover:bg-violet-500"
+            >
+                Share
+            </button>
+
+        </form>
+
+        <form method="POST"
+              action="/weblog/{{ .Weblog.ID }}/delete"
+              class="mt-4">
+
+            <button
+                type="submit"
+                class="rounded-2xl border border-red-500/20 bg-red-500/10 px-5 py-3 font-semibold text-red-400 transition hover:bg-red-500/20"
+            >
+                Delete Weblog
+            </button>
+
+        </form>
+
+    </section>
+
+    {{ end }}
+
+    <!-- Comments -->
+    <section class="mt-10">
+
+        <div class="mb-6">
+            <h2 class="text-2xl font-bold text-white">
+                Comments
+            </h2>
+
+            <p class="mt-1 text-sm text-slate-500">
+                Join the conversation.
+            </p>
+        </div>
+
+        {{ if .Comments }}
+
+            <div class="space-y-4">
+
+                {{ range .Comments }}
+
+                <div class="rounded-2xl border border-white/10 bg-white/[0.035] p-5">
+
+                    <div class="mb-3 flex items-center gap-3">
+
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-blue-500 font-bold text-white">
+                            {{ slice .Username 0 1 }}
+                        </div>
+
+                        <div>
+                            <p class="font-semibold text-white">
+                                {{ .Username }}
+                            </p>
+
+                            <p class="text-xs text-slate-500">
+                                {{ .CreatedAt }}
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <p class="whitespace-pre-line leading-7 text-slate-300">
+                        {{ .Content }}
+                    </p>
+
+                </div>
+
+                {{ end }}
+
+            </div>
+
+        {{ else }}
+
+            <div class="rounded-3xl border border-dashed border-white/10 bg-white/[0.02] p-10 text-center">
+                <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-white/5 text-2xl">
+                    💬
+                </div>
+
+                <h3 class="font-semibold text-white">
+                    No comments yet
+                </h3>
+
+                <p class="mt-2 text-sm text-slate-500">
+                    Be the first person to leave a comment.
+                </p>
+            </div>
+
+        {{ end }}
+
+    </section>
+
+    <!-- Add Comment -->
+    <section class="mt-8 rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl md:p-8">
+
+        <h2 class="text-xl font-bold text-white">
+            Add a Comment
+        </h2>
+
+        <form method="POST"
+              action="/weblog/{{ .Weblog.ID }}/comments"
+              class="mt-5">
+
+            <textarea
+                id="content"
+                name="content"
+                rows="5"
+                required
+                placeholder="Write something..."
+                class="w-full resize-y rounded-2xl border border-white/10 bg-slate-900/70 px-5 py-4 leading-7 text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10"
+            ></textarea>
+
+            <button
+                type="submit"
+                class="mt-4 rounded-2xl bg-violet-600 px-7 py-3.5 font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:-translate-y-0.5 hover:bg-violet-500"
+            >
+                Post Comment →
+            </button>
+
+        </form>
+
+    </section>
+
+</main>
 
 </body>
 </html>
