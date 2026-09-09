@@ -8,12 +8,14 @@ import (
 
 	"github.com/NooraPanahi/Weblog-Application.git/internal/model"
 	"github.com/NooraPanahi/Weblog-Application.git/internal/repo"
+	"github.com/NooraPanahi/Weblog-Application.git/internal/upload"
 )
 
 var (
 	ErrInvalidWeblogInput = errors.New("invalid weblog input")
 	ErrInvalidPrivacy     = errors.New("invalid privacy")
 	ErrWeblogNotFound     = errors.New("weblog not found")
+	ErrNotWeblogOwner     = errors.New("user is not weblog owner")
 )
 
 type WeblogService struct {
@@ -107,6 +109,11 @@ func (s *WeblogService) Delete(weblogID, userID int64) error {
 		}
 
 		return fmt.Errorf("delete weblog: %w", err)
+	}
+	if weblog.Image != nil {
+		if err := upload.DeleteImage(*weblog.Image); err != nil {
+			return fmt.Errorf("delete weblog image: %w", err)
+		}
 	}
 
 	return nil
