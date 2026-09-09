@@ -11,8 +11,9 @@ import (
 
 var (
 	ErrInvalidShareInput = errors.New("invalid share input")
-	ErrNotWeblogOwner    = errors.New("user is not weblog owner")
+	ErrShareNotWeblogOwner    = errors.New("user is not weblog owner")
 	ErrShareUserNotFound = errors.New("share user not found")
+	ErrAlreadyShared     = errors.New("weblog already shared with user")
 )
 
 type WeblogShareService struct {
@@ -43,7 +44,7 @@ func (s *WeblogShareService) Share (weblogID, ownerID int64, username string)err
 	}
 
 	if weblog.AuthorID != ownerID {
-		return ErrNotWeblogOwner
+		return ErrShareNotWeblogOwner
 	}	
 
 	user, err := s.userRepo.FindUserByUsername(username)
@@ -56,7 +57,17 @@ func (s *WeblogShareService) Share (weblogID, ownerID int64, username string)err
 	}
 
 	if user.ID == ownerID {
-		return ErrInvalidInput
+		return ErrInvalidShareInput
+	}
+
+	exists, err := s.shareRepo.Exists(weblogID, user.ID)
+
+	if err != nil {
+		return fmt.Errorf("check existing share:%w", err)
+	}
+
+	if exists {
+		return ErrAlreadyShared
 	}
 
 	if err := s.shareRepo.Create(weblogID, user.ID); err != nil {

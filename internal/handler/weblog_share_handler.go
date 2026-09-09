@@ -43,7 +43,10 @@ func (h *WeblogShareHandler) Share(c echo.Context) error {
 
 		case errors.Is(err, service.ErrShareUserNotFound):
 			return echo.NewHTTPError(http.StatusNotFound, "user not found")
-
+		
+		case errors.Is(err, service.ErrAlreadyShared):
+			return echo.NewHTTPError(http.StatusConflict, "weblog already shared with this user")
+			
 		default:
 			return echo.NewHTTPError(http.StatusInternalServerError, "failed to share weblog")
 		}

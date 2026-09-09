@@ -24,3 +24,16 @@ func (r *WeblogShareRepo) Create (weblogID, userID int64) error {
 
 	return nil
 }
+
+func (r *WeblogShareRepo) Exists(weblogID, userID int64) (bool, error) {
+	query := `SELECT EXISTS (
+			  SELECT 1 FROM weblog_shares
+			  WHERE weblog_id = $1 AND user_id = $2)`
+
+	var exists bool
+
+	if err := r.db.QueryRow(query, weblogID, userID).Scan(&exists); err != nil {
+		return false, fmt.Errorf("weblog share: %w", err)
+	}
+	return exists, nil
+}
