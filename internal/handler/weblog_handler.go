@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/NooraPanahi/Weblog-Application.git/internal/service"
+	"github.com/NooraPanahi/Weblog-Application.git/internal/upload"
 	"github.com/labstack/echo/v4"
 )
 
@@ -33,14 +34,22 @@ func (h *WeblogHandler) Create(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusUnauthorized, "unauthorized")
 	}
 
-	var image *string
-	imageValue := c.FormValue("image")
+	file, err := c.FormFile("image")
 
-	if imageValue != "" {
-		image = &imageValue
+	if err != nil {
+		file = nil
 	}
+	var image *string
 
-	_, err := h.weblogService.Create(title, content, image, userID, privacy)
+	if file != nil {
+		imagePath, err := upload.SaveImage(file)
+
+		if err != nil {
+			return c.Render(http.StatusBadRequest, "create.html", map[string]string {"Error": err.Error()})
+		}
+		image = &imagePath
+	}
+	_, err = h.weblogService.Create(title, content, image, userID, privacy)
 
 	if err != nil {
 		switch {
