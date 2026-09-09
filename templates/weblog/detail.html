@@ -68,7 +68,11 @@
 
         </div>
     </article>
-
+    {{ if .Error }}
+    <div class="mt-6 rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">
+        {{ .Error }}
+    </div>
+    {{ end }}
     <!-- Owner Actions -->
     {{ if eq .UserID .Weblog.AuthorID }}
 

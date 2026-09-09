@@ -11,10 +11,16 @@ import (
 
 type WeblogShareHandler struct {
 	shareService *service.WeblogShareService
+	weblogService  *service.WeblogService
+	commentService *service.CommentService
 }
 
-func NewWeblogShareHandler(shareS *service.WeblogShareService) *WeblogShareHandler {
-	return &WeblogShareHandler{shareService: shareS}
+func NewWeblogShareHandler(shareS *service.WeblogShareService, weblogS *service.WeblogService, commentS *service.CommentService) *WeblogShareHandler {
+	return &WeblogShareHandler{
+		shareService:   shareS,
+		weblogService:  weblogS,
+		commentService: commentS,
+	}
 }
 
 func (h *WeblogShareHandler) Share(c echo.Context) error {
@@ -36,16 +42,16 @@ func (h *WeblogShareHandler) Share(c echo.Context) error {
 	if err != nil {
 		switch {
 		case errors.Is(err, service.ErrInvalidShareInput):
-			return echo.NewHTTPError(http.StatusBadRequest, "invalid share input")
-
+			return h.renderDetailWithError(c, weblogID, userID, "Invalid share input")
+			
 		case errors.Is(err, service.ErrNotWeblogOwner):
 			return echo.NewHTTPError(http.StatusForbidden, "only the weblog owner can share it")
 
 		case errors.Is(err, service.ErrShareUserNotFound):
-			return echo.NewHTTPError(http.StatusNotFound, "user not found")
-		
+			return h.renderDetailWithError(c, weblogID, userID, "User not found")
+			
 		case errors.Is(err, service.ErrAlreadyShared):
-			return echo.NewHTTPError(http.StatusConflict, "weblog already shared with this user")
+			return h.renderDetailWithError(c, weblogID, userID, "This weblog is already shared with this user")
 			
 		default:
 			return echo.NewHTTPError(http.StatusInternalServerError, "failed to share weblog")
@@ -53,4 +59,24 @@ func (h *WeblogShareHandler) Share(c echo.Context) error {
 	}
 
 	return c.Redirect(http.StatusSeeOther,"/weblog/"+strconv.FormatInt(weblogID, 10))
+}
+
+func (h *WeblogShareHandler) renderDetailWithError(c echo.Context, weblogID int64, userID int64, message string) error {
+
+	weblog, err := h.weblogService.GetVisibleWeblogByID(weblogID, userID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusNotFound, "weblog not found")
+	}
+
+	comments, err := h.commentService.ListByWeblogID(weblogID, userID)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "failed to load comments")
+	}
+
+	return c.Render(http.StatusBadRequest, "detail.html", map[string]interface{}{
+		"Weblog":   weblog,
+		"Comments": comments,
+		"UserID":   userID,
+		"Error":    message,
+	})
 }

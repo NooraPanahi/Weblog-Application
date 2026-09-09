@@ -46,7 +46,7 @@ func main () {
 	shareRepo := repo.NewWeblogShareRepo(db)
 	shareService := service.NewWeblogShareService(shareRepo, userRepo, weblogRepo)
 
-	shareHandler := handler.NewWeblogShareHandler(shareService)
+	shareHandler := handler.NewWeblogShareHandler(shareService, weblogService, commentService)
 
 	weblogHandler := handler.NewWeblogHandler(weblogService, commentService)
 
