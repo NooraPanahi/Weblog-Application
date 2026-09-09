@@ -11,10 +11,11 @@ type Comment struct {
 }
 
 type CommentView struct {
-	ID        int64
-	WeblogID  int64
-	UserID    int64
-	Username  string
-	Content   string
-	CreatedAt time.Time
+	ID                 int64
+	WeblogID           int64
+	UserID             int64
+	Username           string
+	Content            string
+	CreatedAt          time.Time
+	CreatedAtFormatted string
 }

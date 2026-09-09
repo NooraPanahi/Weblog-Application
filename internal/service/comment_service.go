@@ -58,5 +58,8 @@ func (s *CommentService) ListByWeblogID (weblogID, userID int64) ([]*model.Comme
 	if err != nil {
 		return nil, err
 	}
+	for i := range comments {
+		comments[i].CreatedAtFormatted = comments[i].CreatedAt.Format("Jan 2, 2006 - 15:04")
+	}
 	return comments, err
 }
