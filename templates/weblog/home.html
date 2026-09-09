@@ -98,9 +98,15 @@
 
                 <div class="mb-4 flex items-center justify-between gap-3">
 
-                    <span class="rounded-full bg-violet-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-violet-400">
-                        {{ .Privacy }}
-                    </span>
+                {{ if eq .Privacy "public" }}
+                <span class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-400">
+                    🌎 Public
+                </span>
+                {{ else }}
+                <span class="rounded-full bg-violet-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-violet-400">
+                    🔒 Private
+                </span>
+                {{ end }}
 
                 </div>
 
