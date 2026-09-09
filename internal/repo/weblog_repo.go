@@ -29,13 +29,15 @@ func (we *WeblogRepo) Create(weblog *model.Weblog) error {
 }
 
 func (r *WeblogRepo) FindWeblogByID(id int64) (*model.Weblog, error) {
-	query := `SELECT id, title, content, image, author_id, privacy, created_at
-			  FROM weblogs WHERE id = $1`
+	query := `SELECT w.id, w.title, w.content, w.image, w.author_id, u.username,  w.privacy, w.created_at
+			  FROM weblogs w
+			  JOIN users u ON u.id = w.author_id
+			   WHERE w.id = $1`
 
 	weblog := &model.Weblog{}
 
 	err := r.db.QueryRow(query, id).Scan(&weblog.ID, &weblog.Title, &weblog.Content, &weblog.Image,
-		&weblog.AuthorID, &weblog.Privacy, &weblog.CreatedAt)
+		&weblog.AuthorID,&weblog.AuthorName, &weblog.Privacy, &weblog.CreatedAt)
 
 	if err != nil {
 		return nil, fmt.Errorf("find weblog by id: %w", err)
@@ -45,8 +47,9 @@ func (r *WeblogRepo) FindWeblogByID(id int64) (*model.Weblog, error) {
 }
 
 func (r *WeblogRepo) ListVisible(userID int64) ([]*model.Weblog, error) {
-	query := `SELECT w.id, w.title, w.content, w.image, w.author_id, w.privacy, w.created_at
+	query := `SELECT w.id, w.title, w.content, w.image, w.author_id,u.username , w.privacy, w.created_at
 			  FROM weblogs w 
+			  JOIN users u ON u.id = w.author_id
 			  LEFT JOIN weblog_shares ws
 			  ON ws.weblog_id = w.id AND ws.user_id = $1
 			  WHERE w.privacy = 'public' OR w.author_id = $1
@@ -64,7 +67,7 @@ func (r *WeblogRepo) ListVisible(userID int64) ([]*model.Weblog, error) {
 
 	for rows.Next() {
 		weblog := &model.Weblog{}
-		err := rows.Scan(&weblog.ID, &weblog.Title, &weblog.Content, &weblog.Image, &weblog.AuthorID, &weblog.Privacy, &weblog.CreatedAt)
+		err := rows.Scan(&weblog.ID, &weblog.Title, &weblog.Content, &weblog.Image, &weblog.AuthorID, &weblog.AuthorName ,&weblog.Privacy, &weblog.CreatedAt)
 
 		if err != nil {
 			return nil, err
@@ -79,7 +82,8 @@ func (r *WeblogRepo) ListVisible(userID int64) ([]*model.Weblog, error) {
 }
 
 func (r *WeblogRepo) FindVisibleByID (id, userID int64) (*model.Weblog, error) {
-	query := `SELECT w.id, w.title, w.content, w.image, w.author_id, w.privacy, w.created_at FROM weblogs w
+	query := `SELECT w.id, w.title, w.content, w.image, w.author_id,u.username, w.privacy, w.created_at FROM weblogs w
+			  JOIN users u ON u.id = w.author_id
 			  LEFT JOIN weblog_shares ws 
 			  ON ws.weblog_id = w.id 
 			  AND ws.user_id = $2
@@ -88,7 +92,7 @@ func (r *WeblogRepo) FindVisibleByID (id, userID int64) (*model.Weblog, error) {
 
 	weblog := &model.Weblog{}
 
-	err := r.db.QueryRow(query, id,userID).Scan(&weblog.ID, &weblog.Title, &weblog.Content, &weblog.Image, &weblog.AuthorID, &weblog.Privacy, &weblog.CreatedAt)
+	err := r.db.QueryRow(query, id,userID).Scan(&weblog.ID, &weblog.Title, &weblog.Content, &weblog.Image, &weblog.AuthorID, &weblog.AuthorName ,&weblog.Privacy, &weblog.CreatedAt)
 
 	if err != nil {
 		return nil, err
