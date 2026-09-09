@@ -36,8 +36,8 @@ func (h *WeblogHandler) Create(c echo.Context) error {
 
 	file, err := c.FormFile("image")
 
-	if err != nil {
-		file = nil
+	if err != nil && !errors.Is(err, http.ErrMissingFile) {
+		return echo.NewHTTPError(http.StatusBadRequest, "failed to read uploaded image")
 	}
 	var image *string
 
@@ -53,7 +53,7 @@ func (h *WeblogHandler) Create(c echo.Context) error {
 
 	if err != nil {
 		switch {
-		case errors.Is(err, service.ErrInvalidInput):
+		case errors.Is(err, service.ErrInvalidWeblogInput):
 			return c.Render(http.StatusBadRequest, "create.html", map[string]string{"Error": "Invalid weblog data"})
 
 		case errors.Is(err, service.ErrInvalidPrivacy):
