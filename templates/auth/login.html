@@ -3,102 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Weblog</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+<title>Login | Weblog</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    parchment: "#F0E8D8",
+                    paper: "#F8F3E9",
+
+                    espresso: "#15120F",
+                    char: "#1D1915",
+                    ink: "#252019",
+                    cream: "#EDE4D3",
+
+                    lamp: {
+                        DEFAULT: "#1B5A4B",
+                        light: "#72C7AF"
+                    },
+
+                    brass: "#B98A3C",
+
+                    walnut: {
+                        1: "#513A25",
+                        2: "#362519",
+                        3: "#21160F"
+                    },
+
+                    pine: {
+                        1: "#756856",
+                        2: "#55493A",
+                        3: "#383027"
+                    }
+                },
+
+                fontFamily: {
+                    display: ["Fraunces", "serif"],
+                    sans: ["Inter", "sans-serif"],
+                    mono: ['"Space Mono"', "monospace"]
+                }
+            }
+        }
+    };
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
 </head>
-
-<body class="flex min-h-screen items-center justify-center bg-slate-950 px-6 text-slate-100">
-
-<div class="absolute inset-0 -z-10 overflow-hidden">
-    <div class="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-violet-600/20 blur-3xl"></div>
+<body class="flex min-h-screen items-center justify-center bg-espresso px-6 font-sans text-cream">
+<div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+<div class="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-lamp/[0.035] blur-3xl"></div>
+<div class="absolute bottom-0 left-0 h-80 w-80 rounded-full bg-walnut-2/[0.06] blur-3xl"></div>
 </div>
 
 <main class="w-full max-w-md">
 
-    <div class="mb-8 text-center">
+<div class="mb-8 text-center">
+    <a href="/" class="font-display text-3xl font-semibold tracking-tight text-cream transition hover:text-lamp-light" >
+        Web<span class="text-lamp">log</span>
+    </a>
 
-        <a href="/" class="text-3xl font-black tracking-tight">
-            Web<span class="text-violet-400">log</span>
-        </a>
+    <h1 class="mt-8 font-display text-4xl font-semibold text-cream"> Welcome back </h1>
+    <p class="mt-3 text-pine-1"> Sign in to continue to your weblog.</p>
 
-        <h1 class="mt-8 text-3xl font-bold text-white">
-            Welcome back
-        </h1>
+</div>
 
-        <p class="mt-3 text-slate-500">
-            Sign in to continue to your weblog.
-        </p>
+{{ if .Error }}
 
+<div class="mb-5 rounded-xl border border-red-500/20 bg-red-500/[0.07] p-4 text-sm text-red-300"> {{ .Error }} </div>
+
+{{ end }}
+
+<form method="POST" action="/login" class="space-y-5 rounded-2xl border border-white/[0.07] bg-char p-7 shadow-2xl shadow-black/20">
+
+    <div>
+        <label for="username" class="mb-2 block text-sm font-semibold text-cream">  Username </label>
+
+        <input type="text"  id="username" name="username"
+            required
+            autocomplete="username"
+            placeholder="Enter your username"
+            class="w-full rounded-xl border border-white/[0.08] bg-espresso px-5 py-4 text-cream placeholder-pine-2 outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]">
     </div>
 
-    {{ if .Error }}
-    <div class="mb-5 rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">
-        {{ .Error }}
+    <div>
+        <label for="password" class="mb-2 block text-sm font-semibold text-cream"> Password </label>
+        <input  type="password"  id="password"  name="password"
+            required
+            autocomplete="current-password"
+            placeholder="Enter your password"
+            class="w-full rounded-xl border border-white/[0.08] bg-espresso px-5 py-4 text-cream placeholder-pine-2 outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]">
     </div>
-    {{ end }}
+    <button type="submit" class="w-full rounded-xl bg-lamp px-6 py-4 font-semibold text-cream transition hover:bg-lamp-light hover:text-espresso" >
+        Login →
+    </button>
+</form>
 
-    <form
-        method="POST"
-        action="/login"
-        class="space-y-5 rounded-3xl border border-white/10 bg-white/[0.04] p-7 shadow-2xl shadow-black/20 backdrop-blur-xl"
-    >
-
-        <div>
-            <label
-                for="username"
-                class="mb-2 block text-sm font-semibold text-slate-200"
-            >
-                Username
-            </label>
-
-            <input
-                type="text"
-                id="username"
-                name="username"
-                required
-                autocomplete="username"
-                placeholder="Enter your username"
-                class="w-full rounded-2xl border border-white/10 bg-slate-900/70 px-5 py-4 text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10"
-            >
-        </div>
-
-        <div>
-            <label
-                for="password"
-                class="mb-2 block text-sm font-semibold text-slate-200"
-            >
-                Password
-            </label>
-
-            <input
-                type="password"
-                id="password"
-                name="password"
-                required
-                autocomplete="current-password"
-                placeholder="Enter your password"
-                class="w-full rounded-2xl border border-white/10 bg-slate-900/70 px-5 py-4 text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10"
-            >
-        </div>
-
-        <button
-            type="submit"
-            class="w-full rounded-2xl bg-violet-600 px-6 py-4 font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:-translate-y-0.5 hover:bg-violet-500"
-        >
-            Login →
-        </button>
-
-    </form>
-
-    <p class="mt-6 text-center text-sm text-slate-500">
-        Don't have an account?
-        <a href="/register" class="font-semibold text-violet-400 hover:text-violet-300">
-            Create one
-        </a>
+    <p class="mt-6 text-center text-sm text-pine-1"> Don't have an account?
+        <a href="/register" class="font-semibold text-lamp-light transition hover:text-cream"> Create one </a>
     </p>
-
 </main>
-
 </body>
 </html>

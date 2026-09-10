@@ -3,235 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ .Weblog.Title }}</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+<title>{{ .Weblog.Title }}</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    parchment: "#F0E8D8",
+                    paper: "#F8F3E9",
+
+                    espresso: "#15120F",
+                    char: "#1D1915",
+                    ink: "#252019",
+                    cream: "#EDE4D3",
+
+                    lamp: {
+                        DEFAULT: "#1B5A4B",
+                        light: "#72C7AF"
+                    },
+
+                    brass: "#B98A3C",
+
+                    walnut: {
+                        1: "#513A25",
+                        2: "#362519",
+                        3: "#21160F"
+                    },
+
+                    pine: {
+                        1: "#756856",
+                        2: "#55493A",
+                        3: "#383027"
+                    }
+                },
+
+                fontFamily: {
+                    display: ["Fraunces", "serif"],
+                    sans: ["Inter", "sans-serif"],
+                    mono: ['"Space Mono"', "monospace"]
+                }
+            }
+        }
+    };
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
 </head>
+<body class="min-h-screen bg-espresso font-sans text-cream">
+<div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+<div class="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-lamp/[0.035] blur-3xl"></div>
 
-<body class="min-h-screen bg-slate-950 text-slate-100">
-
-<div class="absolute inset-0 -z-10 overflow-hidden">
-    <div class="absolute left-1/2 top-0 h-96 w-96 -translate-x-1/2 rounded-full bg-violet-600/10 blur-3xl"></div>
 </div>
 
-<nav class="border-b border-white/10 bg-slate-950/70 backdrop-blur-xl">
-    <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-        <a href="/" class="text-xl font-bold tracking-tight">
-            Web<span class="text-violet-400">log</span>
-        </a>
+<!-- NAVBAR -->
+<nav class="border-b border-white/[0.06] bg-espresso/95 backdrop-blur-xl">
 
-        <a href="/"
-           class="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white">
-            ← Home
-        </a>
-    </div>
+<div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
+
+    <a href="/"
+        class="font-display text-2xl font-semibold tracking-tight text-cream transition hover:text-lamp-light">
+        Web<span class="text-lamp">log</span>
+    </a>
+
+    <a href="/"
+        class="rounded-lg border border-white/[0.08] bg-white/[0.025] px-4 py-2 text-sm font-medium text-pine-1 transition hover:border-lamp/20 hover:bg-white/[0.04] hover:text-cream">
+        ← Home
+    </a>
+
+</div>
+
 </nav>
 
 <main class="mx-auto max-w-5xl px-6 py-10">
 
-    <!-- Weblog -->
-    <article class="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] shadow-2xl shadow-black/20 backdrop-blur-xl">
+<!-- WEBLOG -->
+<article
+    class="overflow-hidden rounded-2xl border border-white/[0.07] bg-char shadow-2xl shadow-black/20" >
 
-        {{ if .Weblog.Image }}
-        <div class="relative">
-            <img
-                src="{{ .Weblog.Image }}"
-                alt="{{ .Weblog.Title }}"
-                class="max-h-[520px] w-full object-cover"
-            >
+    {{ if .Weblog.Image }}
 
-            <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
-        </div>
-        {{ end }}
+    <div class="relative">
 
-        <div class="p-7 md:p-10">
+        <img src="{{ .Weblog.Image }}" alt="{{ .Weblog.Title }}" class="max-h-[520px] w-full object-cover">
+        <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-char/90 to-transparent"></div>
 
-            <div class="mb-5 flex flex-wrap items-center gap-3">
-                {{ if eq .Weblog.Privacy "public" }}
-                <span class="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald-400">
-                    🌎 Public
-                </span>
-                {{ else }}
-                <span class="rounded-full bg-violet-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-violet-400">
-                    🔒 Private
-                </span>
-                {{ end }}
-            </div>
-
-            <h1 class="text-4xl font-bold tracking-tight text-white md:text-5xl">
-                {{ .Weblog.Title }}
-            </h1>
-
-            <div class="mt-8 whitespace-pre-line text-lg leading-8 text-slate-300">
-                {{ .Weblog.Content }}
-            </div>
-            <p class="text-sm text-gray-500">
-                Written by {{ .Weblog.AuthorName }}
-            </p>
-
-        </div>
-    </article>
-    {{ if .Error }}
-    <div class="mt-6 rounded-2xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-300">
-        {{ .Error }}
     </div>
+
     {{ end }}
-    <!-- Owner Actions -->
-    {{ if eq .UserID .Weblog.AuthorID }}
 
-    <section class="mt-8 rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl">
+    <div class="p-7 md:p-10">
 
-        <div class="mb-5">
-            <h2 class="text-xl font-bold text-white">
-                Manage Weblog
-            </h2>
 
-            <p class="mt-1 text-sm text-slate-500">
-                Share your weblog with another user or delete it.
-            </p>
+        <!-- PRIVACY -->
+        <div class="mb-5 flex flex-wrap items-center gap-3">
+
+            {{ if eq .Weblog.Privacy "public" }}
+
+            <span
+                class="rounded-full border border-lamp/20 bg-lamp/[0.08] px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-lamp-light">
+                Public
+            </span>
+
+            {{ else }}
+
+            <span
+                class="rounded-full border border-white/[0.08] bg-white/[0.035] px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-pine-1" >
+                Private
+            </span>
+
+            {{ end }}
+
         </div>
 
-        <form method="POST"
-              action="/weblog/{{ .Weblog.ID }}/share"
-              class="flex flex-col gap-3 sm:flex-row">
+        <!-- TITLE -->
+        <h1 class="font-display text-5xl font-semibold leading-tight tracking-tight text-cream md:text-6xl">  {{ .Weblog.Title }} </h1>
 
-            <input
-                type="text"
-                id="username"
-                name="username"
-                required
-                placeholder="Username to share with..."
-                class="flex-1 rounded-2xl border border-white/10 bg-slate-900/70 px-5 py-3.5 text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10"
-            >
+        <!-- CONTENT -->
+        <div class="mt-8 whitespace-pre-line text-lg leading-8 text-[#C7B9A5]"> {{ .Weblog.Content }} </div>
 
-            <button
-                type="submit"
-                class="rounded-2xl bg-violet-600 px-6 py-3.5 font-semibold text-white transition hover:bg-violet-500"
-            >
-                Share
-            </button>
+        <!-- AUTHOR -->
+        <div class="mt-8 border-t border-white/[0.06] pt-5">
 
-        </form>
+            <p class="text-sm text-pine-1">
+                Written by
+                <span class="font-medium text-[#C7B9A5]"> {{ .Weblog.AuthorName }} </span>
 
-        <form method="POST"
-              action="/weblog/{{ .Weblog.ID }}/delete"
-              class="mt-4">
+            </p>
+        </div>
+    </div>
+</article>
 
-        <button
-            type="submit"
+{{ if .Error }}
+
+<div class="mt-6 rounded-xl border border-red-500/20 bg-red-500/[0.07] p-4 text-sm text-red-300">
+    {{ .Error }}
+</div>
+
+{{ end }}
+
+<!-- OWNER ACTIONS -->
+{{ if eq .UserID .Weblog.AuthorID }}
+
+<section class="mt-8 rounded-2xl border border-white/[0.07] bg-char p-6">
+    <div class="mb-5">
+        <h2 class="font-display text-2xl font-semibold text-cream"> Manage Weblog </h2>
+
+        <p class="mt-1 text-sm text-pine-1"> Share your weblog with another user or delete it. </p>
+    </div>
+
+    <form method="POST"
+        action="/weblog/{{ .Weblog.ID }}/share" class="flex flex-col gap-3 sm:flex-row">
+
+        <input type="text" id="username"  name="username"
+            required
+            placeholder="Username to share with..."
+            class="flex-1 rounded-xl border border-white/[0.08] bg-espresso px-5 py-3.5 text-cream placeholder-pine-2 outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]">
+
+        <button type="submit"
+            class="rounded-xl bg-lamp px-6 py-3.5 font-semibold text-cream transition hover:bg-lamp-light hover:text-espresso">
+            Share
+        </button>
+    </form>
+
+
+    <form method="POST" action="/weblog/{{ .Weblog.ID }}/delete" class="mt-4">
+
+        <button type="submit"
             onclick="return confirm('Are you sure you want to delete this weblog?')"
-            class="rounded-2xl border border-red-500/20 bg-red-500/10 px-5 py-3 font-semibold text-red-400 transition hover:bg-red-500/20"
-        >
+            class="rounded-xl border border-red-500/20 bg-red-500/[0.07] px-5 py-3 font-semibold text-red-400 transition hover:bg-red-500/[0.12]">
             Delete Weblog
         </button>
+    </form>
+</section>
 
-        </form>
+{{ end }}
 
-    </section>
 
-    {{ end }}
+<!-- COMMENTS -->
+<section class="mt-10">
+    <div class="mb-6">
+        <h2 class="font-display text-3xl font-semibold text-cream"> Comments </h2>
+        <p class="mt-1 text-sm text-pine-1">
+            Join the conversation.
+        </p>
+    </div>
 
-    <!-- Comments -->
-    <section class="mt-10">
+    {{ if .Comments }}
 
-        <div class="mb-6">
-            <h2 class="text-2xl font-bold text-white">
-                Comments
-            </h2>
+    <div class="space-y-4">
 
-            <p class="mt-1 text-sm text-slate-500">
-                Join the conversation.
-            </p>
+        {{ range .Comments }}
+
+        <div class="rounded-xl border border-white/[0.07] bg-char p-5 transition hover:border-white/[0.10] hover:bg-[#191612]">
+            <div class="mb-3 flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.07] bg-espresso font-mono text-sm font-semibold text-lamp-light">
+                    {{ slice .Username 0 1 }}
+                </div>
+             <div>
+
+                    <p class="font-semibold text-cream"> {{ .Username }} </p>
+                    <p class="text-xs text-pine-2"> {{ .CreatedAtFormatted }} </p>
+                </div>
+            </div>
+
+            <p class="whitespace-pre-line leading-7 text-[#B8AA97]"> {{ .Content }} </p>
         </div>
-
-        {{ if .Comments }}
-
-            <div class="space-y-4">
-
-                {{ range .Comments }}
-
-                <div class="rounded-2xl border border-white/10 bg-white/[0.035] p-5">
-
-                    <div class="mb-3 flex items-center gap-3">
-
-                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-blue-500 font-bold text-white">
-                            {{ slice .Username 0 1 }}
-                        </div>
-
-                        <div>
-                            <p class="font-semibold text-white">
-                                {{ .Username }}
-                            </p>
-
-                            <p class="text-xs text-slate-500">
-                                {{ .CreatedAtFormatted }}
-                            </p>
-                        </div>
-
-                    </div>
-
-                    <p class="whitespace-pre-line leading-7 text-slate-300">
-                        {{ .Content }}
-                    </p>
-
-                </div>
-
-                {{ end }}
-
-            </div>
-
-        {{ else }}
-
-            <div class="rounded-3xl border border-dashed border-white/10 bg-white/[0.02] p-10 text-center">
-                <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-white/5 text-2xl">
-                    💬
-                </div>
-
-                <h3 class="font-semibold text-white">
-                    No comments yet
-                </h3>
-
-                <p class="mt-2 text-sm text-slate-500">
-                    Be the first person to leave a comment.
-                </p>
-            </div>
 
         {{ end }}
 
-    </section>
+    </div>
 
-    <!-- Add Comment -->
-    <section class="mt-8 rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl md:p-8">
+    {{ else }}
 
-        <h2 class="text-xl font-bold text-white">
-            Add a Comment
-        </h2>
+    <!-- EMPTY COMMENTS -->
+    <div class="rounded-2xl border border-dashed border-white/[0.08] bg-char p-10 text-center">
+        <div
+            class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border border-white/[0.07] bg-espresso text-2xl">
+            💬
+        </div>
 
-        <form method="POST"
-              action="/weblog/{{ .Weblog.ID }}/comments"
-              class="mt-5">
+        <h3 class="font-display text-xl font-semibold text-cream"> No comments yet</h3>
+        <p class="mt-2 text-sm text-pine-1"> Be the first person to leave a comment. </p>
+    </div>
 
-            <textarea
-                id="content"
-                name="content"
-                rows="5"
-                required
-                placeholder="Write something..."
-                class="w-full resize-y rounded-2xl border border-white/10 bg-slate-900/70 px-5 py-4 leading-7 text-white placeholder-slate-500 outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-500/10"
-            ></textarea>
+    {{ end }}
 
-            <button
-                type="submit"
-                class="mt-4 rounded-2xl bg-violet-600 px-7 py-3.5 font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:-translate-y-0.5 hover:bg-violet-500"
-            >
-                Post Comment →
-            </button>
+</section>
 
-        </form>
+<!-- ADD COMMENT -->
+<section class="mt-8 rounded-2xl border border-white/[0.07] bg-char p-6 md:p-8">
+    <h2 class="font-display text-2xl font-semibold text-cream"> Add a Comment </h2>
 
-    </section>
+    <form
+        method="POST"
+        action="/weblog/{{ .Weblog.ID }}/comments"  class="mt-5" >
 
+        <textarea id="content"  name="content"
+            rows="5"
+            required
+            placeholder="Write something..."
+            class="w-full resize-y rounded-xl border border-white/[0.08] bg-espresso px-5 py-4 leading-7 text-cream placeholder-pine-2 outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]"
+        ></textarea>
+
+        <button type="submit"
+            class="mt-4 rounded-xl bg-lamp px-7 py-3.5 font-semibold text-cream transition hover:bg-lamp-light hover:text-espresso" >
+            Post Comment →
+        </button>
+    </form>
+</section>
 </main>
-
 </body>
 </html>
