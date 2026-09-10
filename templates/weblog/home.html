@@ -4,64 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weblog</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        parchment: "#F0E8D8",
-                        paper: "#F8F3E9",
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    parchment: "#F0E8D8",
+                    paper: "#F8F3E9",
 
-                        // Main background
-                        espresso: "#15120F",
+                    espresso: "#15120F",
+                    char: "#1D1915",
 
-                        // Cards / sections
-                        char: "#1D1915",
+                    ink: "#252019",
+                    cream: "#EDE4D3",
 
-                        // Text
-                        ink: "#252019",
-                        cream: "#EDE4D3",
-
-                        // Dark muted green
-                        lamp: {
-                            DEFAULT: "#1B5A4B",
-                            light: "#72C7AF"
-                        },
-
-                        // Very subtle accent
-                        brass: "#B98A3C",
-
-                        // Darker browns
-                        walnut: {
-                            1: "#513A25",
-                            2: "#362519",
-                            3: "#21160F"
-                        },
-
-                        pine: {
-                            1: "#756856",
-                            2: "#55493A",
-                            3: "#383027"
-                        }
+                    lamp: {
+                        DEFAULT: "#1B5A4B",
+                        light: "#72C7AF"
                     },
 
-                    fontFamily: {
-                        display: ["Fraunces", "serif"],
-                        sans: ["Inter", "sans-serif"],
-                        mono: ['"Space Mono"', "monospace"]
+                    brass: "#B98A3C",
+
+                    walnut: {
+                        1: "#513A25",
+                        2: "#362519",
+                        3: "#21160F"
+                    },
+
+                    pine: {
+                        1: "#756856",
+                        2: "#55493A",
+                        3: "#383027"
                     }
+                },
+
+                fontFamily: {
+                    display: ["Fraunces", "serif"],
+                    sans: ["Inter", "sans-serif"],
+                    mono: ['"Space Mono"', "monospace"]
                 }
             }
-        };
-    </script>
+        }
+    };
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet" >
+<link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
 </head>
 <body class="min-h-screen bg-espresso font-sans text-cream">
 
@@ -69,218 +63,416 @@
 <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
     <div class="absolute -right-40 -top-40 h-[500px] w-[500px] rounded-full bg-lamp/[0.035] blur-3xl"></div>
     <div class="absolute -bottom-40 -left-40 h-[450px] w-[450px] rounded-full bg-walnut-2/[0.08] blur-3xl"></div>
-
 </div>
 
 <!-- NAVBAR -->
 <nav class="sticky top-0 z-50 border-b border-white/[0.06] bg-espresso/95 backdrop-blur-xl">
-    <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-        <!-- Logo -->
-        <a href="/" class="font-display text-2xl font-semibold tracking-tight text-cream transition hover:text-lamp-light" >
-            Web<span class="text-lamp">log</span>
+<div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+
+    <!-- Logo -->
+    <a href="/" class="font-display text-2xl font-semibold tracking-tight text-cream transition hover:text-lamp-light">
+        Web<span class="text-lamp">log</span>
+    </a>
+
+    <!-- Desktop navigation -->
+    <div class="hidden items-center gap-6 md:flex">
+
+        {{ if .Username }}
+
+        <span class="text-sm text-pine-1"> Welcome,
+            <span class="font-medium text-cream"> {{ .Username }} </span>
+        </span>
+
+        {{ end }}
+
+        <form method="POST" action="/logout">
+            <button type="submit"
+                class="rounded-lg border border-white/[0.08] bg-white/[0.025] px-4 py-2 text-sm font-medium text-pine-1 transition hover:border-lamp/30 hover:bg-lamp/[0.06] hover:text-cream"  >
+                Logout
+            </button>
+        </form>
+    </div>
+
+    <!-- Mobile hamburger -->
+    <button id="menuButton" type="button"
+        class="rounded-lg border border-white/[0.08] bg-white/[0.025] p-2.5 text-pine-1 transition hover:bg-white/[0.05] hover:text-cream md:hidden"
+        aria-label="Open menu" >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="h-5 w-5" >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+            />
+        </svg>
+    </button>
+</div>
+
+<!-- Mobile menu -->
+<div id="mobileMenu" class="hidden border-t border-white/[0.06] bg-char md:hidden">
+    <div class="space-y-3 px-6 py-5">
+
+        {{ if .Username }}
+
+        <div class="pb-2 text-sm text-pine-1"> Welcome,
+            <span class="font-medium text-cream"> {{ .Username }} </span>
+        </div>
+
+        {{ end }}
+
+        <a href="/weblog/create"
+            class="block rounded-lg bg-lamp px-4 py-3 text-center text-sm font-semibold text-cream transition hover:bg-lamp-light hover:text-espresso" >
+            + Create Weblog
         </a>
 
-        <!-- Desktop navigation -->
-        <div class="hidden items-center gap-6 md:flex">
-
-             {{ if .Username }}
-
-            <span class="text-sm text-pine-1">  Welcome,
-                <span class="font-medium text-cream"> {{ .Username }} </span>
-            </span>
-
-            {{ end }}
-
-            <form method="POST" action="/logout">
-                <button type="submit" class="rounded-lg border border-white/[0.08] bg-white/[0.025] px-4 py-2 text-sm font-medium text-pine-1 transition hover:border-lamp/30 hover:bg-lamp/[0.06] hover:text-cream" >
-                    Logout
-                </button>
-            </form>
-        </div>
-
-        <!-- Mobile hamburger -->
-        <button id="menuButton" type="button"
-            class="rounded-lg border border-white/[0.08] bg-white/[0.025] p-2.5 text-pine-1 transition hover:bg-white/[0.05] hover:text-cream md:hidden"
-            aria-label="Open menu">
-
-            <svg
-                xmlns="http://www.w3.org/2000/svg" fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="h-5 w-5">
-                <path  stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
-            </svg>
-        </button>
-
+        <form method="POST" action="/logout">
+            <button type="submit"
+                class="w-full rounded-lg border border-white/[0.08] px-4 py-3 text-sm font-medium text-pine-1 transition hover:bg-white/[0.04] hover:text-cream">
+                Logout
+            </button>
+        </form>
     </div>
+</div>
 
-    <!-- Mobile menu -->
-    <div id="mobileMenu" class="hidden border-t border-white/[0.06] bg-char md:hidden">
-        <div class="space-y-3 px-6 py-5">
-
-            {{ if .Username }}
-
-            <div class="pb-2 text-sm text-pine-1"> Welcome,
-                <span class="font-medium text-cream"> {{ .Username }} </span>
-            </div>
-
-            {{ end }}
-
-            <a href="/weblog/create"
-                class="block rounded-lg bg-lamp px-4 py-3 text-center text-sm font-semibold text-cream transition hover:bg-lamp-light hover:text-espresso">
-                + Create Weblog
-            </a>
-
-            <form method="POST" action="/logout">
-
-                <button type="submit"
-                    class="w-full rounded-lg border border-white/[0.08] px-4 py-3 text-sm font-medium text-pine-1 transition hover:bg-white/[0.04] hover:text-cream">
-                    Logout
-                </button>
-            </form>
-        </div>
-    </div>
 </nav>
 
 <!-- MAIN -->
 <main class="mx-auto max-w-6xl px-6 py-16">
 
-    <!-- HERO -->
-    <section class="mb-16">
-        <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-            <div class="max-w-2xl">
-                <p class="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.3em] text-lamp">  Your space</p>
-
-                <h1 class="font-display text-5xl font-semibold leading-tight tracking-tight text-cream md:text-6xl" >
-                    Stories worth
-                    <span class="text-lamp">remembering.</span>
-                </h1>
-                <p class="mt-6 max-w-xl text-base leading-8 text-pine-1 md:text-lg">
-                    Write your thoughts, share your ideas and discover
-                    stories from other people.
-                </p>
-            </div>
-
-            <!-- Create button -->
-            <a href="/weblog/create"
-                class="inline-flex shrink-0 items-center justify-center rounded-lg bg-lamp px-6 py-3.5 font-semibold text-cream transition duration-200 hover:bg-lamp-light hover:text-espresso" >
-                <span class="mr-2 text-lg">+</span> Create Weblog
-            </a>
+<!-- HERO -->
+<section class="mb-16">
+    <div class="flex flex-col justify-between gap-8 md:flex-row md:items-end">
+        <div class="max-w-2xl">
+            <p class="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.3em] text-lamp">   Your space </p>
+            <h1 class="font-display text-5xl font-semibold leading-tight tracking-tight text-cream md:text-6xl">
+                Stories worth  <span class="text-lamp">remembering.</span>
+            </h1>
+            <p class="mt-6 max-w-xl text-base leading-8 text-pine-1 md:text-lg">
+                Write your thoughts, share your ideas and discover
+                stories from other people.
+            </p>
         </div>
-    </section>
+        <!-- Create button -->
+        <a href="/weblog/create"
+            class="inline-flex shrink-0 items-center justify-center rounded-lg bg-lamp px-6 py-3.5 font-semibold text-cream transition duration-200 hover:bg-lamp-light hover:text-espresso" >
+            <span class="mr-2 text-lg">+</span> Create Weblog 
+        </a>
+    </div>
+</section>
 
-    <!-- DIVIDER -->
-    <div class="mb-12 h-px bg-white/[0.06]"></div>
+<!-- DIVIDER -->
+<div class="mb-14 h-px bg-white/[0.06]"></div>
 
-    <!-- WEBLOGS -->
-    {{ if .Weblogs }}
+<!-- MY WEBLOGS -->
+<section class="mb-16">
 
-    <section>
-        <!-- Section header -->
-        <div class="mb-7 flex items-end justify-between">
-            <div>
-                <p class="mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-lamp">  Latest writing </p>
-                <h2 class="font-display text-3xl font-semibold text-cream"> Weblogs </h2>
-            </div>
-            <span class="hidden text-sm text-pine-1 sm:block"> {{ len .Weblogs }} stories </span>
+    <!-- Section header -->
+    <div class="mb-7 flex items-end justify-between">
+        <div>
+            <p class="mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-lamp"> Your writing </p>
+            <h2 class="font-display text-3xl font-semibold text-cream"> My Weblogs </h2>
+            <p class="mt-2 text-sm text-pine-1"> Your personal stories and thoughts. </p>
         </div>
 
-        <!-- Cards -->
-        <div class="grid gap-7 md:grid-cols-2">
+        {{ if .MyWeblogs }}
+        <span class="hidden text-sm text-pine-1 sm:block">
+            {{ len .MyWeblogs }} stories
+        </span>
+        {{ end }}
 
-            {{ range .Weblogs }}
+    </div>
 
-            <article  class="group overflow-hidden rounded-xl border border-white/[0.07] bg-char transition duration-300 hover:border-lamp/20 hover:bg-[#191612]">
+    {{ if .MyWeblogs }}
 
-                <!-- Image -->
-                {{ if .Image }}
+    <!-- Cards -->
+    <div class="grid gap-7 md:grid-cols-2">
 
-                <div class="relative overflow-hidden">
-                    <img src="{{ .Image }}" alt="{{ .Title }}"
-                        class="h-64 w-full object-cover opacity-90 transition duration-500 group-hover:scale-[1.015] group-hover:opacity-100" >
-                    <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-char to-transparent"></div>
-                </div>
+        {{ range .MyWeblogs }}
 
-                {{ end }}
+        <article
+            class="group overflow-hidden rounded-xl border border-white/[0.07] bg-char transition duration-300 hover:border-lamp/20 hover:bg-[#191612]">
 
-                <div class="p-7">
+            <!-- Image -->
+            {{ if .Image }}
 
-                    <!-- Privacy -->
-                    <div class="mb-5">
-
-                        {{ if eq .Privacy "public" }}
-
-                        <span class="inline-flex rounded-full border border-lamp/20 bg-lamp/[0.08] px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-lamp-light">
-                            Public
-                        </span>
-
-                        {{ else }}
-
-                        <span class="inline-flex rounded-full border border-white/[0.08] bg-white/[0.035] px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-pine-1">
-                            Private
-                        </span>
-
-                        {{ end }}
-                    </div>
-
-                    <!-- Title -->
-                    <h3 class="font-display text-3xl font-semibold leading-tight text-cream transition group-hover:text-lamp-light">
-                        <a href="/weblog/{{ .ID }}"> {{ .Title }} </a>
-                    </h3>
-
-                    <!-- Author -->
-                    <div class="mt-4 flex items-center gap-3">
-
-                        <div  class="flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.08] bg-espresso font-mono text-xs text-lamp">
-                            ✍
-                        </div>
-                        <div class="text-sm text-pine-1"> by
-                            <span class="font-medium text-[#C7B9A5]"> {{ .AuthorName }} </span>
-                        </div>
-                    </div>
-
-                    <!-- Content -->
-                    <p class="mt-6 line-clamp-4 leading-7 text-pine-1"> {{ .Content }} </p>
-
-                    <!-- Read -->
-                    <div class="mt-7 border-t border-white/[0.06] pt-5">
-
-                        <a href="/weblog/{{ .ID }}" class="inline-flex items-center text-sm font-semibold text-lamp transition hover:text-lamp-light">
-                            Read weblog
-                            <span class="ml-2 transition duration-200 group-hover:translate-x-1">
-                                → </span>
-                        </a>
-                    </div>
-                </div>
-            </article>
+            <div class="relative overflow-hidden">
+                <img src="{{ .Image }}" alt="{{ .Title }}"
+                    class="h-64 w-full object-cover opacity-90 transition duration-500 group-hover:scale-[1.015] group-hover:opacity-100" >
+                <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-char to-transparent"></div>
+            </div>
 
             {{ end }}
 
-        </div>
-    </section>
+            <div class="p-7">
+
+                <!-- Privacy -->
+                <div class="mb-5">
+
+                    {{ if eq .Privacy "public" }}
+
+                    <span class="inline-flex rounded-full border border-lamp/20 bg-lamp/[0.08] px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-lamp-light"> Public  </span>
+
+                    {{ else }}
+
+                    <span class="inline-flex rounded-full border border-white/[0.08] bg-white/[0.035] px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-pine-1"> Private </span>
+
+                    {{ end }}
+                </div>
+
+                <!-- Title -->
+                <h3 class="font-display text-3xl font-semibold leading-tight text-cream transition group-hover:text-lamp-light">
+                    <a href="/weblog/{{ .ID }}"> {{ .Title }} </a>
+                </h3>
+
+                <!-- Author -->
+                <div class="mt-4 flex items-center gap-3">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.08] bg-espresso font-mono text-xs text-lamp">
+                        ✍
+                    </div>
+                    <div class="text-sm text-pine-1"> by <span class="font-medium text-[#C7B9A5]"> {{ .AuthorName }}</span>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <p class="mt-6 line-clamp-4 leading-7 text-pine-1">{{ .Content }} </p>
+
+                <!-- Read -->
+                <div class="mt-7 border-t border-white/[0.06] pt-5">
+
+                    <a href="/weblog/{{ .ID }}" class="inline-flex items-center text-sm font-semibold text-lamp transition hover:text-lamp-light">
+                        Read weblog
+                        <span class="ml-2 transition duration-200 group-hover:translate-x-1">  → </span>
+                    </a>
+                </div>
+            </div>
+        </article>
+
+        {{ end }}
+    </div>
 
     {{ else }}
 
-    <!-- EMPTY STATE -->
-    <section class="rounded-xl border border-dashed border-white/[0.08] bg-char px-6 py-16 text-center">
-
-        <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full border border-white/[0.07] bg-espresso font-display text-2xl text-lamp">
+    <!-- Empty My Weblogs -->
+    <div class="rounded-xl border border-dashed border-white/[0.08] bg-char px-6 py-12 text-center">
+        <div class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-white/[0.07] bg-espresso font-display text-xl text-lamp">
             ✍
         </div>
 
-        <h2 class="font-display text-3xl font-semibold text-cream"> No weblogs yet </h2>
-
-        <p class="mx-auto mt-3 max-w-md leading-7 text-pine-1">  Start writing your first story and make this space yours. </p>
-
-        <a href="/weblog/create" class="mt-7 inline-flex rounded-lg bg-lamp px-6 py-3.5 font-semibold text-cream transition hover:bg-lamp-light hover:text-espresso">
+        <h3 class="font-display text-2xl font-semibold text-cream">  No weblogs yet </h3>
+        <p class="mx-auto mt-2 max-w-md text-sm leading-7 text-pine-1">  You haven't written anything yet. Start with your first story.</p>
+        <a href="/weblog/create" class="mt-6 inline-flex rounded-lg bg-lamp px-5 py-3 text-sm font-semibold text-cream transition hover:bg-lamp-light hover:text-espresso">
             Create your first weblog
         </a>
-    </section>
+    </div>
 
     {{ end }}
+
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="mb-16 h-px bg-white/[0.06]"></div>
+
+<!-- SHARED WITH ME -->
+<section class="mb-16">
+
+    <!-- Section header -->
+    <div class="mb-7 flex items-end justify-between">
+        <div>
+            <p class="mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-lamp"> Shared with you </p>
+            <h2 class="font-display text-3xl font-semibold text-cream"> Shared With Me </h2>
+            <p class="mt-2 text-sm text-pine-1"> Stories that other people have shared with you. </p>
+        </div>
+
+        {{ if .SharedWeblogs }}
+        <span class="hidden text-sm text-pine-1 sm:block">
+            {{ len .SharedWeblogs }} stories
+        </span>
+        {{ end }}
+
+    </div>
+
+    {{ if .SharedWeblogs }}
+
+    <div class="grid gap-7 md:grid-cols-2">
+        {{ range .SharedWeblogs }}
+
+        <article class="group overflow-hidden rounded-xl border border-white/[0.07] bg-char transition duration-300 hover:border-lamp/20 hover:bg-[#191612]" >
+
+            {{ if .Image }}
+
+            <div class="relative overflow-hidden">
+                <img  src="{{ .Image }}" alt="{{ .Title }}" class="h-64 w-full object-cover opacity-90 transition duration-500 group-hover:scale-[1.015] group-hover:opacity-100">
+                <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-char to-transparent"></div>
+            </div>
+
+            {{ end }}
+
+            <div class="p-7">
+
+                <!-- Shared badge -->
+                <div class="mb-5 flex items-center gap-2">
+
+                    {{ if eq .Privacy "public" }}
+
+                    <span class="inline-flex rounded-full border border-lamp/20 bg-lamp/[0.08] px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-lamp-light"> Public </span>
+
+                    {{ else }}
+
+                    <span class="inline-flex rounded-full border border-white/[0.08] bg-white/[0.035] px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-pine-1"> Private </span>
+
+                    {{ end }}
+
+                    <span class="text-pine-1">·</span>
+                    <span class="font-mono text-[10px] uppercase tracking-wider text-brass"> Shared  </span>
+                </div>
+
+                <!-- Title -->
+                <h3 class="font-display text-3xl font-semibold leading-tight text-cream transition group-hover:text-lamp-light">
+                    <a href="/weblog/{{ .ID }}"> {{ .Title }} </a>
+                </h3>
+
+                <!-- Author -->
+                <div class="mt-4 flex items-center gap-3">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.08] bg-espresso font-mono text-xs text-lamp"> ✍ </div>
+                    <div class="text-sm text-pine-1">  by
+                        <span class="font-medium text-[#C7B9A5]"> {{ .AuthorName }} </span>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <p class="mt-6 line-clamp-4 leading-7 text-pine-1"> {{ .Content }} </p>
+
+                <!-- Read -->
+                <div class="mt-7 border-t border-white/[0.06] pt-5">
+
+                    <a href="/weblog/{{ .ID }}"  class="inline-flex items-center text-sm font-semibold text-lamp transition hover:text-lamp-light"  >
+                        Read weblog
+                        <span class="ml-2 transition duration-200 group-hover:translate-x-1">  → </span>
+                    </a>
+                </div>
+            </div>
+        </article>
+
+        {{ end }}
+    </div>
+
+    {{ else }}
+
+    <!-- Empty Shared -->
+    <div class="rounded-xl border border-dashed border-white/[0.08] bg-char px-6 py-12 text-center">
+        <div class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-white/[0.07] bg-espresso font-display text-xl text-lamp">  ↗
+        </div>
+        <h3 class="font-display text-2xl font-semibold text-cream">  Nothing shared with you </h3>
+        <p class="mx-auto mt-2 max-w-md text-sm leading-7 text-pine-1"> When someone shares a weblog with you, it will appear here. </p>
+    </div>
+
+    {{ end }}
+
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="mb-16 h-px bg-white/[0.06]"></div>
+
+<!-- PUBLIC WEBLOGS -->
+<section>
+
+    <!-- Section header -->
+    <div class="mb-7 flex items-end justify-between">
+        <div>
+            <p class="mb-2 font-mono text-[11px] uppercase tracking-[0.25em] text-lamp"> Discover </p>
+            <h2 class="font-display text-3xl font-semibold text-cream"> Public Weblogs</h2>
+            <p class="mt-2 text-sm text-pine-1">  Discover public stories from other writers.</p>
+        </div>
+
+        {{ if .PublicWeblogs }}
+        <span class="hidden text-sm text-pine-1 sm:block">
+            {{ len .PublicWeblogs }} stories
+        </span>
+        {{ end }}
+
+    </div>
+
+    {{ if .PublicWeblogs }}
+
+    <div class="grid gap-7 md:grid-cols-2">
+
+        {{ range .PublicWeblogs }}
+
+        <article  class="group overflow-hidden rounded-xl border border-white/[0.07] bg-char transition duration-300 hover:border-lamp/20 hover:bg-[#191612]" >
+
+            {{ if .Image }}
+
+            <div class="relative overflow-hidden">
+                <img src="{{ .Image }}" alt="{{ .Title }}"
+                    class="h-64 w-full object-cover opacity-90 transition duration-500 group-hover:scale-[1.015] group-hover:opacity-100">
+                <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-char to-transparent"></div>
+            </div>
+
+            {{ end }}
+
+            <div class="p-7">
+
+                <!-- Public badge -->
+                <div class="mb-5">
+                    <span class="inline-flex rounded-full border border-lamp/20 bg-lamp/[0.08] px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-lamp-light">
+                        Public
+                    </span>
+                </div>
+
+                <!-- Title -->
+                <h3 class="font-display text-3xl font-semibold leading-tight text-cream transition group-hover:text-lamp-light">
+                    <a href="/weblog/{{ .ID }}">   {{ .Title }} </a>
+                </h3>
+
+                <!-- Author -->
+                <div class="mt-4 flex items-center gap-3">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.08] bg-espresso font-mono text-xs text-lamp">
+                        ✍
+                    </div>
+                    <div class="text-sm text-pine-1"> by
+                        <span class="font-medium text-[#C7B9A5]">
+                            {{ .AuthorName }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <p class="mt-6 line-clamp-4 leading-7 text-pine-1"> {{ .Content }} </p>
+
+                <!-- Read -->
+                <div class="mt-7 border-t border-white/[0.06] pt-5">
+
+                    <a href="/weblog/{{ .ID }}"
+                        class="inline-flex items-center text-sm font-semibold text-lamp transition hover:text-lamp-light">
+                        Read weblog
+                        <span class="ml-2 transition duration-200 group-hover:translate-x-1">   →  </span>
+                    </a>
+                </div>
+            </div>
+        </article>
+
+        {{ end }}
+    </div>
+
+    {{ else }}
+
+    <!-- Empty Public -->
+    <div class="rounded-xl border border-dashed border-white/[0.08] bg-char px-6 py-12 text-center">
+        <div class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full border border-white/[0.07] bg-espresso font-display text-xl text-lamp">
+            ◌
+        </div>
+        <h3 class="font-display text-2xl font-semibold text-cream"> No public weblogs yet </h3>
+        <p class="mx-auto mt-2 max-w-md text-sm leading-7 text-pine-1">  Public stories from other writers will appear here.</p>
+    </div>
+
+    {{ end }}
+
+</section>
 
 </main>
 
@@ -292,7 +484,6 @@
     menuButton.addEventListener("click", () => {
         mobileMenu.classList.toggle("hidden");
     });
-
 </script>
 </body>
 </html>

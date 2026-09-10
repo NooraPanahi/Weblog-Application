@@ -46,41 +46,6 @@ func (r *WeblogRepo) FindWeblogByID(id int64) (*model.Weblog, error) {
 	return weblog, nil
 }
 
-func (r *WeblogRepo) ListVisible(userID int64) ([]*model.Weblog, error) {
-	query := `SELECT w.id, w.title, w.content, w.image, w.author_id,u.username , w.privacy, w.created_at
-			  FROM weblogs w 
-			  JOIN users u ON u.id = w.author_id
-			  LEFT JOIN weblog_shares ws
-			  ON ws.weblog_id = w.id AND ws.user_id = $1
-			  WHERE w.privacy = 'public' OR w.author_id = $1
-			  OR ws.user_id IS NOT NULL
-			  ORDER BY w.created_at DESC`
-
-	rows, err := r.db.Query(query, userID)
-	if err != nil {
-		return  nil, err
-	}
-
-	defer rows.Close()
-
-	var weblogs []*model.Weblog
-
-	for rows.Next() {
-		weblog := &model.Weblog{}
-		err := rows.Scan(&weblog.ID, &weblog.Title, &weblog.Content, &weblog.Image, &weblog.AuthorID, &weblog.AuthorName ,&weblog.Privacy, &weblog.CreatedAt)
-
-		if err != nil {
-			return nil, err
-		}
-		weblogs = append(weblogs, weblog)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return weblogs, nil
-}
-
 func (r *WeblogRepo) FindVisibleByID (id, userID int64) (*model.Weblog, error) {
 	query := `SELECT w.id, w.title, w.content, w.image, w.author_id,u.username, w.privacy, w.created_at FROM weblogs w
 			  JOIN users u ON u.id = w.author_id
@@ -118,4 +83,110 @@ func (r *WeblogRepo) Delete (id int64) error {
 		return sql.ErrNoRows
 	}
 	return nil
+}
+
+func (r *WeblogRepo) ListMyWeblogs(userID int64) ([]*model.Weblog, error) {
+	query := `SELECT w.id, w.title, w.content, w.image,
+	                 w.author_id, u.username, w.privacy, w.created_at
+	          FROM weblogs w
+	          JOIN users u ON u.id = w.author_id
+	          WHERE w.author_id = $1
+	          ORDER BY w.created_at DESC`
+
+	rows, err := r.db.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var weblogs []*model.Weblog
+
+	for rows.Next() {
+		weblog := &model.Weblog{}
+
+		err := rows.Scan( &weblog.ID, &weblog.Title,&weblog.Content, &weblog.Image, &weblog.AuthorID, &weblog.AuthorName, &weblog.Privacy,&weblog.CreatedAt)
+
+		if err != nil {
+			return nil, err
+		}
+
+		weblogs = append(weblogs, weblog)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return weblogs, nil
+}
+
+func (r *WeblogRepo) ListSharedWeblogs(userID int64) ([]*model.Weblog, error) {
+	query := `SELECT w.id, w.title, w.content, w.image,
+	                 w.author_id, u.username, w.privacy, w.created_at
+	          FROM weblogs w
+	          JOIN users u ON u.id = w.author_id
+	          JOIN weblog_shares ws ON ws.weblog_id = w.id
+	          WHERE ws.user_id = $1
+	            AND w.author_id <> $1
+	          ORDER BY w.created_at DESC`
+
+	rows, err := r.db.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var weblogs []*model.Weblog
+
+	for rows.Next() {
+		weblog := &model.Weblog{}
+
+		err := rows.Scan(&weblog.ID, &weblog.Title, &weblog.Content, &weblog.Image, &weblog.AuthorID, &weblog.AuthorName, &weblog.Privacy, &weblog.CreatedAt)
+
+		if err != nil {
+			return nil, err
+		}
+		weblogs = append(weblogs, weblog)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return weblogs, nil
+}
+
+func (r *WeblogRepo) ListPublicWeblogs(userID int64) ([]*model.Weblog, error) {
+	query := `SELECT w.id, w.title, w.content, w.image,
+	                 w.author_id, u.username, w.privacy, w.created_at
+	          FROM weblogs w
+	          JOIN users u ON u.id = w.author_id
+	          WHERE w.privacy = 'public'
+	            AND w.author_id <> $1
+	          ORDER BY w.created_at DESC`
+
+	rows, err := r.db.Query(query, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	var weblogs []*model.Weblog
+
+	for rows.Next() {
+		weblog := &model.Weblog{}
+
+		err := rows.Scan(&weblog.ID, &weblog.Title, &weblog.Content, &weblog.Image, &weblog.AuthorID, &weblog.AuthorName, &weblog.Privacy, &weblog.CreatedAt)
+
+		if err != nil {
+			return nil, err
+		}
+		weblogs = append(weblogs, weblog)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return weblogs, nil
 }

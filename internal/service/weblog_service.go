@@ -56,17 +56,25 @@ func (s *WeblogService) Create(title, content string, image *string, authorID in
 	return weblog, nil
 }
 
-func (s *WeblogService) ListVisible(userID int64) ([]*model.Weblog, error) {
+func (s *WeblogService) ListMyWeblogs(userID int64) ([]*model.Weblog, error) {
 	if userID <= 0 {
 		return nil, ErrInvalidWeblogInput
 	}
+	return s.weblogRepo.ListMyWeblogs(userID)
+}
 
-	weblogs, err := s.weblogRepo.ListVisible(userID)
-
-	if err != nil {
-		return nil, err
+func (s *WeblogService) ListSharedWeblogs(userID int64) ([]*model.Weblog, error) {
+	if userID <= 0 {
+		return nil, ErrInvalidWeblogInput
 	}
-	return weblogs, nil
+	return s.weblogRepo.ListSharedWeblogs(userID)
+}
+
+func (s *WeblogService) ListPublicWeblogs(userID int64) ([]*model.Weblog, error) {
+	if userID <= 0 {
+		return nil, ErrInvalidWeblogInput
+	}
+	return s.weblogRepo.ListPublicWeblogs(userID)
 }
 
 func (s *WeblogService) GetVisibleWeblogByID(weblogID, userID int64) (*model.Weblog, error) {
