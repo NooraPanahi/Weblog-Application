@@ -11,6 +11,8 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - uploads_data:/statics/images
 
 volumes:
   postgres_data:
+  uploads_data:
