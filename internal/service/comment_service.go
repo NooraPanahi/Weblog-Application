@@ -2,7 +2,9 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"strings"
+	"time"
 
 	"github.com/NooraPanahi/Weblog-Application.git/internal/model"
 	"github.com/NooraPanahi/Weblog-Application.git/internal/repo"
@@ -13,7 +15,7 @@ var (
 )
 
 type CommentService struct {
-	commentRepo *repo.CommentRepo
+	commentRepo   *repo.CommentRepo
 	WeblogService *WeblogService
 }
 
@@ -42,7 +44,7 @@ func (s *CommentService) Create(weblogID, userID int64, content string) (*model.
 	return comment, nil
 }
 
-func (s *CommentService) ListByWeblogID (weblogID, userID int64) ([]*model.CommentView, error){
+func (s *CommentService) ListByWeblogID(weblogID, userID int64) ([]*model.CommentView, error) {
 	if weblogID <= 0 || userID <= 0 {
 		return nil, ErrInvalidCommentInput
 	}
@@ -58,8 +60,14 @@ func (s *CommentService) ListByWeblogID (weblogID, userID int64) ([]*model.Comme
 	if err != nil {
 		return nil, err
 	}
+
+	iranLocation, err := time.LoadLocation("Asia/Tehran")
+
+	if err != nil {
+		return nil, fmt.Errorf("load timezoan: %w", err)
+	}
 	for i := range comments {
-		comments[i].CreatedAtFormatted = comments[i].CreatedAt.Format("Jan 2, 2006 - 15:04")
+		comments[i].CreatedAtFormatted = comments[i].CreatedAt.In(iranLocation).Format("Jan 2, 2006 - 15:04")
 	}
 	return comments, err
 }
