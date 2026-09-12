@@ -1,6 +1,7 @@
 package service
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"strings"
@@ -12,6 +13,8 @@ import (
 
 var (
 	ErrInvalidCommentInput = errors.New("Invalid comment input")
+	ErrCommentNotFound     = errors.New("comment not found")
+	ErrorCommentForbidden  = errors.New("comment forbidden")
 )
 
 type CommentService struct {
@@ -70,4 +73,26 @@ func (s *CommentService) ListByWeblogID(weblogID, userID int64) ([]*model.Commen
 		comments[i].CreatedAtFormatted = comments[i].CreatedAt.In(iranLocation).Format("Jan 2, 2006 - 15:04")
 	}
 	return comments, err
+}
+
+func (s *CommentService) Delete(commentID, userID int64) error {
+	if commentID <= 0 || userID <= 0 {
+		return ErrInvalidCommentInput
+	}
+	comment, err := s.commentRepo.GetByID(commentID)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrCommentNotFound
+		}
+		return fmt.Errorf("get comment for delete: %w", err)
+	}
+
+	if comment.UserID != userID {
+		return ErrorCommentForbidden
+	}
+	if err := s.commentRepo.Delete(commentID); err != nil {
+		return err
+	}
+	return nil
 }

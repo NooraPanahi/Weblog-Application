@@ -2,6 +2,7 @@ package repo
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 
 	"github.com/NooraPanahi/Weblog-Application.git/internal/model"
@@ -59,4 +60,33 @@ func (co *CommentRepo) ListByWeblogID (weblogID int64) ([]*model.CommentView, er
 		return nil, err
 	}
 	return comments, nil
+}
+
+func (co *CommentRepo) GetByID (commentID int64) (*model.Comment, error) {
+	query := `SELECT id, weblog_id, user_id, content, created_at
+			  FROM comments WHERE id = $1`
+
+	comment := &model.Comment{}
+	err := co.db.QueryRow(query, commentID).Scan(&comment.ID, &comment.WeblogID,
+		&comment.UserID, &comment.Content,&comment.CreatedAt)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, sql.ErrNoRows
+		}
+		return nil, fmt.Errorf("get comment: %w", err)
+	}
+	return comment, nil
+}
+
+func (co *CommentRepo) Delete(commentID int64) error {
+	query := `DELETE FROM comments WHERE id = $1`
+
+	_, err := co.db.Exec(query, commentID)
+
+	if err != nil {
+		return fmt.Errorf("delete comment: %w", err)
+	}
+
+	return nil
 }
