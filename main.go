@@ -69,6 +69,7 @@ func main () {
 	e.GET("/", homeHandler.Home, middleware.RequireAuth(sessionManager, userRepo))
 
 	e.POST("/weblog/:id/comments", commentHandler.Create, middleware.RequireAuth(sessionManager, userRepo))
+	e.POST("/comments/:id/delete", commentHandler.Delete, middleware.RequireAuth(sessionManager, userRepo))
 
 	e.Static("/static", "statics")
 	e.Logger.Fatal(e.Start(":"+ cfg.Port))
