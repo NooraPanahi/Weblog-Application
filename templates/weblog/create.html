@@ -3,11 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function () {
+            var savedTheme = localStorage.getItem("theme");
+            if (savedTheme === "light") 
+                document.documentElement.classList.remove("dark");
+            else 
+                document.documentElement.classList.add("dark");
+        })();
+    </script>
+    <style>
+        :root {
+            --color-surface: 240 232 216;
+            --color-char: 248 243 233;
+            --color-cream: 37 32 25;
+            --color-accent: 27 90 75;
+            --color-pine-1: 81 58 37;
+            --color-pine-2: 54 37 25;
+            --color-pine-3: 33 22 15;
+            --color-overlay: 37 32 25;
+            --color-danger-300: 185 28 28;
+            --color-danger-400: 185 28 28;
+        }
+        .dark {
+            --color-surface: 21 18 15;
+            --color-char: 29 25 21;
+            --color-cream: 237 228 211;
+            --color-accent: 114 199 175;
+            --color-pine-1: 117 104 86;
+            --color-pine-2: 85 73 58;
+            --color-pine-3: 56 48 39;
+            --color-overlay: 255 255 255;
+            --color-danger-300: 252 165 165;
+            --color-danger-400: 248 113 113;
+        }
+    </style>
 
 <title>Create Weblog</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
     tailwind.config = {
+        darkMode: "class",
         theme: {
             extend: {
                 colors: {
@@ -15,30 +51,33 @@
                     paper: "#F8F3E9",
 
                     espresso: "#15120F",
-                    char: "#1D1915",
+                    surface: "rgb(var(--color-surface) / <alpha-value>)",
+                    char: "rgb(var(--color-char) / <alpha-value>)",
                     ink: "#252019",
-                    cream: "#EDE4D3",
-
+                    cream: "rgb(var(--color-cream) / <alpha-value>)",
                     lamp: {
                         DEFAULT: "#1B5A4B",
                         light: "#72C7AF"
                     },
-
+                    accent: "rgb(var(--color-accent) / <alpha-value>)",
                     brass: "#B98A3C",
-
                     walnut: {
                         1: "#513A25",
                         2: "#362519",
                         3: "#21160F"
                     },
-
                     pine: {
-                        1: "#756856",
-                        2: "#55493A",
-                        3: "#383027"
+                        1: "rgb(var(--color-pine-1) / <alpha-value>)",
+                        2: "rgb(var(--color-pine-2) / <alpha-value>)",
+                        3: "rgb(var(--color-pine-3) / <alpha-value>)"
+                    },
+
+                    white: "rgb(var(--color-overlay) / <alpha-value>)",
+                    red: {
+                        300: "rgb(var(--color-danger-300) / <alpha-value>)",
+                        400: "rgb(var(--color-danger-400) / <alpha-value>)"
                     }
                 },
-
                 fontFamily: {
                     display: ["Fraunces", "serif"],
                     sans: ["Inter", "sans-serif"],
@@ -55,24 +94,32 @@
     rel="stylesheet">
 
 </head>
-<body class="min-h-screen bg-espresso font-sans text-cream">
+<body class="min-h-screen bg-surface font-sans text-cream">
 <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
 <div class="absolute -right-40 -top-40 h-96 w-96 rounded-full bg-lamp/[0.035] blur-3xl"></div>
-<div class="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-walnut-2/[0.07] blur-3xl"></div>
+<div class="absolute -bottom-40 -left-40 h-96 w-96 rounded-full bg-brass/[0.05] dark:bg-walnut-2/[0.07] blur-3xl"></div>
 </div>
 
 <!-- NAVBAR -->
-<nav class="border-b border-white/[0.06] bg-espresso/95 backdrop-blur-xl">
+<nav class="border-b border-white/[0.06] bg-surface/95 backdrop-blur-xl">
 <div class="mx-auto flex max-w-4xl items-center justify-between px-6 py-5">
 
-    <a href="/" class="font-display text-2xl font-semibold tracking-tight text-cream transition hover:text-lamp-light"> 
+    <a href="/" class="font-display text-2xl font-semibold tracking-tight text-cream transition hover:text-accent"> 
     Web<span class="text-lamp">log</span>
     </a>
 
-    <a href="/" class="rounded-lg border border-white/[0.08] bg-white/[0.025] px-4 py-2 text-sm font-medium text-pine-1 transition hover:border-lamp/20 hover:bg-white/[0.04] hover:text-cream" >
-        ← Back to Home
-    </a>
+    <div class="flex items-center gap-3">
 
+        <!-- Theme toggle -->
+        <button id="themeToggle" type="button" aria-label="Toggle theme"
+            class="rounded-lg border border-white/[0.08] bg-white/[0.025] p-2.5 text-sm text-pine-1 transition hover:bg-white/[0.05] hover:text-cream">
+        🌙
+    </button>
+
+        <a href="/" class="rounded-lg border border-white/[0.08] bg-white/[0.025] px-4 py-2 text-sm font-medium text-pine-1 transition hover:border-lamp/20 hover:bg-white/[0.04] hover:text-cream" >
+            ← Back to Home
+        </a>
+    </div>
 </div>
 </nav>
 
@@ -103,7 +150,7 @@
         <input type="text" id="title" name="title"
             required
             placeholder="Give your weblog a great title..."
-            class="w-full rounded-xl border border-white/[0.08] bg-espresso px-5 py-4 text-cream placeholder-pine-2 outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]">
+            class="w-full rounded-xl border border-white/[0.08] bg-surface px-5 py-4 text-cream placeholder-pine-2 outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]">
     </div>
 
     <!-- CONTENT -->
@@ -111,7 +158,7 @@
         <label for="content" class="mb-2 block text-sm font-semibold text-cream" > Content </label>
         <textarea id="content" name="content" rows="12" required
             placeholder="Write your story here..."
-            class="w-full resize-y rounded-xl border border-white/[0.08] bg-espresso px-5 py-4 leading-7 text-cream placeholder-pine-2 outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]"
+            class="w-full resize-y rounded-xl border border-white/[0.08] bg-surface px-5 py-4 leading-7 text-cream placeholder-pine-2 outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]"
         ></textarea>
 
     </div>
@@ -121,7 +168,7 @@
         <label for="image" class="mb-2 block text-sm font-semibold text-cream">
             Cover Image
         </label>
-        <div class="rounded-xl border border-dashed border-white/[0.10] bg-espresso p-6">
+        <div class="rounded-xl border border-dashed border-white/[0.10] bg-surface p-6">
             <input type="file" id="image" name="image" accept="image/*"
                 class="block w-full cursor-pointer text-sm text-pine-1 file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-lamp file:px-4 file:py-2.5 file:font-semibold file:text-cream file:transition hover:file:bg-lamp-light hover:file:text-espresso">
 
@@ -135,7 +182,7 @@
     <div>
         <label  for="privacy"  class="mb-2 block text-sm font-semibold text-cream"> Privacy </label>
         <select id="privacy" name="privacy"
-            class="w-full appearance-none rounded-xl border border-white/[0.08] bg-espresso px-5 py-4 text-cream outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]" >
+            class="w-full appearance-none rounded-xl border border-white/[0.08] bg-surface px-5 py-4 text-cream outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]" >
 
             <option value="public"> 🌎 Public </option>
             <option value="private"> 🔒 Private </option>
@@ -145,19 +192,20 @@
         <p class="mt-2 text-xs text-pine-2"> Public weblogs can be discovered by other users. Private weblogs are restricted.</p>
     </div>
 
-
     <!-- ACTIONS -->
     <div class="flex flex-col gap-3 border-t border-white/[0.06] pt-6 sm:flex-row">
         <button  type="submit" class="flex-1 rounded-xl bg-lamp px-6 py-4 font-semibold text-cream transition hover:bg-lamp-light hover:text-espresso">
             Publish Weblog →
         </button>
 
-        <a href="/" class="rounded-xl border border-white/[0.08] bg-white/[0.025] px-6 py-4 text-center font-semibold text-pine-1 transition hover:bg-white/[0.04] hover:text-cream"
-        >
+        <a href="/" class="rounded-xl border border-white/[0.08] bg-white/[0.025] px-6 py-4 text-center font-semibold text-pine-1 transition hover:bg-white/[0.04] hover:text-cream">
             Cancel
         </a>
     </div>
 </form>
 </main>
+
+<!-- THEME SCRIPT -->
+<script src="/static/js/theme.js"></script>
 </body>
 </html>

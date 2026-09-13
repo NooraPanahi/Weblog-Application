@@ -3,41 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script>
+        (function () {
+            var savedTheme = localStorage.getItem("theme");
+            if (savedTheme === "light")
+                document.documentElement.classList.remove("dark");
+            else 
+                document.documentElement.classList.add("dark");
+        })();
+    </script>
+    <style>
+        :root {
+            --color-surface: 240 232 216;
+            --color-char: 248 243 233;
+            --color-cream: 37 32 25;
+            --color-accent: 27 90 75;
+            --color-pine-1: 81 58 37;
+            --color-pine-2: 54 37 25;
+            --color-pine-3: 33 22 15;
+            --color-overlay: 37 32 25;
+            --color-danger-300: 185 28 28;
+            --color-danger-400: 185 28 28;
+        }
+        .dark {
+            --color-surface: 21 18 15;
+            --color-char: 29 25 21;
+            --color-cream: 237 228 211;
+            --color-accent: 114 199 175;
+            --color-pine-1: 117 104 86;
+            --color-pine-2: 85 73 58;
+            --color-pine-3: 56 48 39;
+            --color-overlay: 255 255 255;
+            --color-danger-300: 252 165 165;
+            --color-danger-400: 248 113 113;
+        }
+    </style>
 <title>Register | Weblog</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
     tailwind.config = {
+        darkMode: "class",
         theme: {
             extend: {
                 colors: {
                     parchment: "#F0E8D8",
                     paper: "#F8F3E9",
-
                     espresso: "#15120F",
-                    char: "#1D1915",
+                    surface: "rgb(var(--color-surface) / <alpha-value>)",
+                    char: "rgb(var(--color-char) / <alpha-value>)",
                     ink: "#252019",
-                    cream: "#EDE4D3",
-
+                    cream: "rgb(var(--color-cream) / <alpha-value>)",
                     lamp: {
                         DEFAULT: "#1B5A4B",
                         light: "#72C7AF"
                     },
-
+                    accent: "rgb(var(--color-accent) / <alpha-value>)",
                     brass: "#B98A3C",
-
                     walnut: {
                         1: "#513A25",
                         2: "#362519",
                         3: "#21160F"
                     },
-
                     pine: {
-                        1: "#756856",
-                        2: "#55493A",
-                        3: "#383027"
+                        1: "rgb(var(--color-pine-1) / <alpha-value>)",
+                        2: "rgb(var(--color-pine-2) / <alpha-value>)",
+                        3: "rgb(var(--color-pine-3) / <alpha-value>)"
+                    },
+                    white: "rgb(var(--color-overlay) / <alpha-value>)",
+                    red: {
+                        300: "rgb(var(--color-danger-300) / <alpha-value>)",
+                        400: "rgb(var(--color-danger-400) / <alpha-value>)"
                     }
                 },
-
                 fontFamily: {
                     display: ["Fraunces", "serif"],
                     sans: ["Inter", "sans-serif"],
@@ -54,15 +92,22 @@
     href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet">
 </head>
-<body class="flex min-h-screen items-center justify-center bg-espresso px-6 font-sans text-cream">
+<body class="flex min-h-screen items-center justify-center bg-surface px-6 font-sans text-cream">
+
+<!-- Theme toggle -->
+<button id="themeToggle" type="button" aria-label="Toggle theme"
+    class="fixed right-5 top-5 z-50 rounded-lg border border-white/[0.08] bg-white/[0.025] p-2.5 text-sm text-pine-1 transition hover:bg-white/[0.05] hover:text-cream">
+🌙
+    </button>
+
 <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
 <div class="absolute right-0 top-0 h-96 w-96 rounded-full bg-lamp/[0.035] blur-3xl"></div>
-<div class="absolute bottom-0 left-0 h-80 w-80 rounded-full bg-walnut-2/[0.06] blur-3xl"></div>
+<div class="absolute bottom-0 left-0 h-80 w-80 rounded-full bg-brass/[0.05] dark:bg-walnut-2/[0.06] blur-3xl"></div>
 </div>
 <main class="w-full max-w-md">
 <div class="mb-8 text-center">
 
-    <a href="/"  class="font-display text-3xl font-semibold tracking-tight text-cream transition hover:text-lamp-light">
+    <a href="/"  class="font-display text-3xl font-semibold tracking-tight text-cream transition hover:text-accent">
         Web<span class="text-lamp">log</span>
     </a>
 
@@ -79,31 +124,29 @@
 <form method="POST" action="/register" class="space-y-5 rounded-2xl border border-white/[0.07] bg-char p-7 shadow-2xl shadow-black/20">
     <div>
         <label for="username" class="mb-2 block text-sm font-semibold text-cream"> Username </label>
-        <input  type="text"  id="username"  name="username"
-            required
+        <input  type="text"  id="username"  name="username" required
             autocomplete="username"
             placeholder="Choose a username"
-            class="w-full rounded-xl border border-white/[0.08] bg-espresso px-5 py-4 text-cream placeholder-pine-2 outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]" >
+            class="w-full rounded-xl border border-white/[0.08] bg-surface px-5 py-4 text-cream placeholder-pine-2 outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]" >
     </div>
-
     <div>
         <label for="password" class="mb-2 block text-sm font-semibold text-cream" > Password </label>
         <input type="password" id="password" name="password"
             required
             autocomplete="new-password"
             placeholder="Create a strong password"
-            class="w-full rounded-xl border border-white/[0.08] bg-espresso px-5 py-4 text-cream placeholder-pine-2 outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]" >
+            class="w-full rounded-xl border border-white/[0.08] bg-surface px-5 py-4 text-cream placeholder-pine-2 outline-none transition focus:border-lamp/40 focus:ring-4 focus:ring-lamp/[0.08]" >
     </div>
-
     <button type="submit" class="w-full rounded-xl bg-lamp px-6 py-4 font-semibold text-cream transition hover:bg-lamp-light hover:text-espresso" >
         Create Account →
     </button>
 </form>
-
 <p class="mt-6 text-center text-sm text-pine-1"> Already have an account?
-    <a href="/login" class="font-semibold text-lamp-light transition hover:text-cream"> Login </a>
+    <a href="/login" class="font-semibold text-accent transition hover:text-cream"> Login </a>
 </p>
-
 </main>
+
+<!-- THEME SCRIPT -->
+<script src="/static/js/theme.js"></script>
 </body>
 </html>
